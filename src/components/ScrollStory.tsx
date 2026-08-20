@@ -32,10 +32,9 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
     return () => unsubscribe();
   }, [smoothProgress]);
 
-  // Subtle Hero intro text overlay that lives ONLY in negative space (perimeter)
-  // and smoothly fades out as soon as the sequence starts playing (0% -> 12% scroll)
-  const heroTextOpacity = useTransform(scrollYProgress, [0, 0.06, 0.12], [1, 0.8, 0]);
-  const heroTextY = useTransform(scrollYProgress, [0, 0.12], [0, -20]);
+  // Subtle Hero intro text overlay that smoothly fades out as scroll sequence progresses
+  const heroTextOpacity = useTransform(scrollYProgress, [0, 0.08, 0.16], [1, 0.7, 0]);
+  const heroTextY = useTransform(scrollYProgress, [0, 0.16], [0, -15]);
 
   const scrollToWork = () => {
     const el = document.getElementById('work');
@@ -45,57 +44,118 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[320vh] sm:h-[350vh] md:h-[380vh] bg-[#050505]"
+      className="relative w-full max-w-full h-[260vh] sm:h-[300vh] lg:h-[380vh] bg-[#050505]"
     >
       {/* Sticky Viewport (Pinned at top: 0 for 100vh until animation section ends) */}
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center bg-[#050505] z-10">
-        {/* Fullscreen 240-Frame Canvas */}
-        <ImageSequenceCanvas scrollProgress={scrollProgress} totalFrames={240} />
+      <div className="sticky top-0 left-0 w-full max-w-full h-screen overflow-hidden flex flex-col justify-between bg-[#050505] z-10">
+        
+        {/* ========================================================================= */}
+        {/* DESKTOP HERO PRESENTATION (>= 1024px) - UNCHANGED FULLSCREEN COMPOSITION */}
+        {/* ========================================================================= */}
+        <div className="hidden lg:block absolute inset-0 w-full h-full">
+          <ImageSequenceCanvas scrollProgress={scrollProgress} totalFrames={240} />
 
-        {/* Responsive Hero Perimeter Content (Negative Space Only - Center Remains Clean) */}
-        <motion.div
-          style={{ opacity: heroTextOpacity, y: heroTextY }}
-          className="absolute inset-0 z-10 pointer-events-none p-4 sm:p-8 md:p-12 lg:p-14 flex flex-col justify-between"
-        >
-          {/* Top Row: Negative space header tags (below navbar) */}
-          <div className="pt-16 sm:pt-20 md:pt-24 flex items-center justify-between pointer-events-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full border border-white/10 bg-[#111114]/75 backdrop-blur-md">
+          {/* Desktop Perimeter Negative Space Layout */}
+          <motion.div
+            style={{ opacity: heroTextOpacity, y: heroTextY }}
+            className="absolute inset-0 z-10 pointer-events-none p-12 lg:p-14 flex flex-col justify-between"
+          >
+            {/* Top Row: Negative space header tags */}
+            <div className="pt-24 flex items-center justify-between pointer-events-auto">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-[#111114]/75 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B7FF3C] animate-pulse" />
+                <span className="text-[10px] font-mono tracking-widest uppercase text-white/80">
+                  GROWTH SYSTEM ARCHITECTURE
+                </span>
+              </div>
+
+              <div className="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest text-white/40 uppercase">
+                240-FRAME CINEMATIC CORE
+              </div>
+            </div>
+
+            {/* Bottom Row: Desktop manifesto, scroll prompt & CTAs */}
+            <div className="pb-6 flex items-end justify-between gap-6 pointer-events-auto">
+              <div className="max-w-sm text-left">
+                <div className="text-xs font-mono uppercase tracking-widest text-[#B7FF3C] mb-1">
+                  MARKETING BUILT FOR GROWTH.
+                </div>
+                <p className="text-sm text-white/70 font-light leading-relaxed">
+                  Strategy, creative, and performance engineered to move ambitious brands forward.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center gap-1 text-white/40 pb-2">
+                <span className="text-[10px] font-mono tracking-widest uppercase">
+                  SCROLL TO EXPLORE
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#B7FF3C]" />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={onOpenProjectModal}
+                  className="px-5 py-2.5 rounded-full bg-[#B7FF3C] text-[#050505] font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all duration-300 hover:bg-[#D7FF7A] hover:scale-105 shadow-[0_0_20px_rgba(183,255,60,0.3)]"
+                >
+                  <span>Start a Project</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  onClick={scrollToWork}
+                  className="px-5 py-2.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white/80 hover:text-white font-medium text-xs uppercase tracking-wider hover:bg-white/10 transition-all duration-300"
+                >
+                  Explore Work
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* MOBILE & TABLET HERO PRESENTATION (< 1024px) - 16:9 COMPOSITION           */}
+        {/* ========================================================================= */}
+        <div className="lg:hidden relative w-full h-full flex flex-col justify-between p-4 sm:p-6 pt-20 sm:pt-24 pb-6 overflow-hidden">
+          {/* Mobile Top Header */}
+          <motion.div
+            style={{ opacity: heroTextOpacity, y: heroTextY }}
+            className="w-full flex items-center justify-between pointer-events-auto shrink-0 mb-3"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-[#111114]/80 backdrop-blur-md">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B7FF3C] animate-pulse" />
               <span className="text-[9px] sm:text-[10px] font-mono tracking-widest uppercase text-white/80">
                 GROWTH SYSTEM ARCHITECTURE
               </span>
             </div>
 
-            <div className="hidden sm:inline-flex items-center gap-2 text-[10px] font-mono tracking-widest text-white/40 uppercase">
-              240-FRAME CINEMATIC CORE
-            </div>
+            <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#B7FF3C] uppercase font-bold">
+              240-FRAME
+            </span>
+          </motion.div>
+
+          {/* Mobile Center 16:9 Aspect-Ratio Canvas Container */}
+          <div className="relative w-full max-w-full aspect-[16/9] my-auto mx-auto rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] flex items-center justify-center">
+            <ImageSequenceCanvas scrollProgress={scrollProgress} totalFrames={240} />
           </div>
 
-          {/* Bottom Row: Responsive Left description & Right CTAs */}
-          <div className="pb-4 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 pointer-events-auto">
-            {/* Bottom-Left: Subdued Manifesto Tag */}
-            <div className="max-w-xs sm:max-w-sm text-left">
-              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#B7FF3C] mb-1">
+          {/* Mobile Bottom Manifesto & CTAs */}
+          <motion.div
+            style={{ opacity: heroTextOpacity }}
+            className="w-full flex flex-col gap-3.5 mt-3 pointer-events-auto shrink-0"
+          >
+            <div className="text-left">
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#B7FF3C] font-bold">
                 MARKETING BUILT FOR GROWTH.
               </div>
-              <p className="text-xs sm:text-sm text-white/70 font-light leading-relaxed">
+              <p className="text-xs text-white/70 font-light mt-0.5 leading-relaxed">
                 Strategy, creative, and performance engineered to move ambitious brands forward.
               </p>
             </div>
 
-            {/* Bottom-Center: Scroll prompt (visible on desktop) */}
-            <div className="hidden lg:flex flex-col items-center gap-1 text-white/40 pb-2">
-              <span className="text-[10px] font-mono tracking-widest uppercase">
-                SCROLL TO EXPLORE
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#B7FF3C]" />
-            </div>
-
-            {/* Bottom-Right: Quick Action CTAs */}
-            <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2.5 w-full">
               <button
                 onClick={onOpenProjectModal}
-                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#B7FF3C] text-[#050505] font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all duration-300 hover:bg-[#D7FF7A] hover:scale-105 shadow-[0_0_20px_rgba(183,255,60,0.3)]"
+                className="flex-1 py-2.5 px-3 rounded-full bg-[#B7FF3C] text-[#050505] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(183,255,60,0.3)]"
               >
                 <span>Start a Project</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -103,13 +163,13 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
 
               <button
                 onClick={scrollToWork}
-                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white/80 hover:text-white font-medium text-xs uppercase tracking-wider hover:bg-white/10 transition-all duration-300"
+                className="flex-1 py-2.5 px-3 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white/90 font-medium text-xs uppercase tracking-wider text-center"
               >
                 Explore Work
               </button>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* Minimal Scroll Progress Track at bottom edge */}
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5 z-20 pointer-events-none">

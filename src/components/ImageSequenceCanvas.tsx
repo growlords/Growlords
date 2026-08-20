@@ -17,6 +17,7 @@ export default function ImageSequenceCanvas({
   totalFrames = TOTAL_FRAMES,
 }: ImageSequenceCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>(new Array(TOTAL_FRAMES).fill(null));
   const isLoadedMapRef = useRef<boolean[]>(new Array(TOTAL_FRAMES).fill(false));
 
@@ -78,7 +79,7 @@ export default function ImageSequenceCanvas({
     const canvasHeight = canvas.height;
 
     // Aspect ratio "cover" math
-    const imgRatio = NATIVE_WIDTH / NATIVE_HEIGHT;
+    const imgRatio = NATIVE_WIDTH / NATIVE_HEIGHT; // 1.7777778 (16:9)
     const canvasRatio = canvasWidth / canvasHeight;
 
     let drawWidth: number;
@@ -86,7 +87,13 @@ export default function ImageSequenceCanvas({
     let drawX: number;
     let drawY: number;
 
-    if (canvasRatio > imgRatio) {
+    if (Math.abs(canvasRatio - imgRatio) < 0.02) {
+      // Exact or near 16:9 ratio match (e.g. mobile 16:9 container)
+      drawWidth = canvasWidth;
+      drawHeight = canvasHeight;
+      drawX = 0;
+      drawY = 0;
+    } else if (canvasRatio > imgRatio) {
       drawWidth = canvasWidth;
       drawHeight = canvasWidth / imgRatio;
       drawX = 0;
@@ -132,7 +139,7 @@ export default function ImageSequenceCanvas({
 
       // Smooth exponential lerp toward target frame
       if (Math.abs(diff) > 0.01) {
-        currentFrameRef.current += diff * 0.22;
+        currentFrameRef.current += diff * 0.24;
       } else {
         currentFrameRef.current = target;
       }
@@ -156,18 +163,23 @@ export default function ImageSequenceCanvas({
     };
   }, [drawFrame]);
 
-  // Canvas Resize Handler
+  // Dynamic Container-Aware Canvas Resize Handler
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for butter 60fps
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const rect = container.getBoundingClientRect();
+    const width = rect.width > 0 ? rect.width : window.innerWidth;
+    const height = rect.height > 0 ? rect.height : window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+    const targetW = Math.round(width * dpr);
+    const targetH = Math.round(height * dpr);
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
@@ -179,8 +191,25 @@ export default function ImageSequenceCanvas({
 
   useEffect(() => {
     handleResize();
+
+    const container = containerRef.current;
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (container && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        handleResize();
+      });
+      resizeObserver.observe(container);
+    }
+
     window.addEventListener('resize', handleResize, { passive: true });
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize, { passive: true });
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, [handleResize]);
 
   // Optimized Progressive Image Preloading Pipeline
@@ -252,11 +281,14 @@ export default function ImageSequenceCanvas({
   const loadPercent = Math.round((loadedCount / totalFrames) * 100);
 
   return (
-    <div className="relative w-full h-full bg-[#050505] overflow-hidden flex items-center justify-center select-none">
+    <div
+      ref={containerRef}
+      className="relative w-full h-full max-w-full bg-[#050505] overflow-hidden flex items-center justify-center select-none"
+    >
       {/* Fullscreen HTML5 Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        className="absolute inset-0 w-full h-full block pointer-events-none"
         style={{ backgroundColor: '#050505' }}
       />
 
@@ -271,15 +303,15 @@ export default function ImageSequenceCanvas({
 
       {/* Ultra-Minimal Initial Loading Indicator (Disappears once ready) */}
       <div
-        className={`absolute bottom-6 left-6 z-40 flex items-center gap-3 px-3 py-1.5 rounded-full border border-white/10 bg-[#0A0A0C]/80 backdrop-blur-md transition-opacity duration-700 pointer-events-none ${
+        className={`absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-2.5 sm:gap-3 px-3 py-1.5 rounded-full border border-white/10 bg-[#0A0A0C]/85 backdrop-blur-md transition-opacity duration-700 pointer-events-none ${
           loadPercent >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
       >
         <div className="w-1.5 h-1.5 rounded-full bg-[#B7FF3C] animate-pulse" />
-        <span className="text-[10px] font-mono tracking-widest uppercase text-white/70">
+        <span className="text-[9px] sm:text-[10px] font-mono tracking-widest uppercase text-white/70">
           INITIALIZING {loadPercent}%
         </span>
-        <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
+        <div className="w-10 sm:w-12 h-1 bg-white/10 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#B7FF3C] transition-all duration-150"
             style={{ width: `${loadPercent}%` }}

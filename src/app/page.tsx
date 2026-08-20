@@ -22,7 +22,7 @@ export default function Home() {
   const handleCloseProjectModal = () => setIsProjectModalOpen(false);
 
   return (
-    <div className="relative min-h-screen bg-[#050505] text-white selection:bg-[#B7FF3C] selection:text-[#050505]">
+    <div className="relative w-full max-w-[100vw] min-h-screen bg-[#050505] text-white selection:bg-[#B7FF3C] selection:text-[#050505] overflow-x-clip">
       {/* Desktop Custom Follower Cursor */}
       <CustomCursor />
 
@@ -30,8 +30,8 @@ export default function Home() {
       <Navbar onOpenProjectModal={handleOpenProjectModal} />
 
       {/* Main Document Flow */}
-      <main className="relative w-full">
-        {/* 1. Hero / 240-Frame Sticky Canvas Animation Section (350vh scroll duration) */}
+      <main className="relative w-full max-w-full overflow-x-clip">
+        {/* 1. Hero / 240-Frame Sticky Canvas Animation Section */}
         <ScrollStory onOpenProjectModal={handleOpenProjectModal} />
 
         {/* 2. Strategic Positioning Bridge (Connects smoothly right after Canvas releases) */}
