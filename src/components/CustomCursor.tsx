@@ -16,8 +16,9 @@ export default function CustomCursor() {
   const springY = useSpring(mouseY, { stiffness: 450, damping: 32, mass: 0.5 });
 
   useEffect(() => {
-    // Only show custom cursor on fine pointer devices (desktop mouse)
-    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    // Only show custom cursor on fine pointer devices (desktop mouse, width >= 1024px)
+    if (typeof window === 'undefined') return;
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
     if (isTouch) return;
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -68,7 +69,7 @@ export default function CustomCursor() {
   if (!isVisible) return null;
 
   return (
-    <>
+    <div className="hidden lg:block">
       {/* Outer Follower Ring / Interactive Pill */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-50 flex items-center justify-center -translate-x-1/2 -translate-y-1/2 will-change-transform"
@@ -107,6 +108,6 @@ export default function CustomCursor() {
           }}
         />
       )}
-    </>
+    </div>
   );
 }
