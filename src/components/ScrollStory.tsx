@@ -4,12 +4,16 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ImageSequenceCanvas from './ImageSequenceCanvas';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import { useContent } from '@/context/ContentContext';
 
 interface ScrollStoryProps {
   onOpenProjectModal: () => void;
 }
 
 export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
+  const { content } = useContent();
+  const hero = content.hero;
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -65,12 +69,12 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-[#111114]/75 backdrop-blur-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B7FF3C] animate-pulse" />
                 <span className="text-[10px] font-mono tracking-widest uppercase text-white/80">
-                  GROWTH SYSTEM ARCHITECTURE
+                  {hero.tagLeft}
                 </span>
               </div>
 
               <div className="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest text-white/40 uppercase">
-                240-FRAME CINEMATIC CORE
+                {hero.tagRight}
               </div>
             </div>
 
@@ -78,16 +82,16 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
             <div className="pb-6 flex items-end justify-between gap-6 pointer-events-auto">
               <div className="max-w-sm text-left">
                 <div className="text-xs font-mono uppercase tracking-widest text-[#B7FF3C] mb-1">
-                  MARKETING BUILT FOR GROWTH.
+                  {hero.headline}
                 </div>
                 <p className="text-sm text-white/70 font-light leading-relaxed">
-                  Strategy, creative, and performance engineered to move ambitious brands forward.
+                  {hero.subtitle}
                 </p>
               </div>
 
               <div className="flex flex-col items-center gap-1 text-white/40 pb-2">
                 <span className="text-[10px] font-mono tracking-widest uppercase">
-                  SCROLL TO EXPLORE
+                  {hero.scrollPromptText || 'SCROLL TO EXPLORE'}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#B7FF3C]" />
               </div>
@@ -97,7 +101,7 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
                   onClick={onOpenProjectModal}
                   className="px-5 py-2.5 rounded-full bg-[#B7FF3C] text-[#050505] font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all duration-300 hover:bg-[#D7FF7A] hover:scale-105 shadow-[0_0_20px_rgba(183,255,60,0.3)]"
                 >
-                  <span>Start a Project</span>
+                  <span>{hero.primaryCtaText}</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </button>
 
@@ -105,7 +109,7 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
                   onClick={scrollToWork}
                   className="px-5 py-2.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white/80 hover:text-white font-medium text-xs uppercase tracking-wider hover:bg-white/10 transition-all duration-300"
                 >
-                  Explore Work
+                  {hero.secondaryCtaText}
                 </button>
               </div>
             </div>
@@ -124,12 +128,12 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-[#111114]/80 backdrop-blur-md">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B7FF3C] animate-pulse" />
               <span className="text-[9px] sm:text-[10px] font-mono tracking-widest uppercase text-white/80">
-                GROWTH SYSTEM ARCHITECTURE
+                {hero.tagLeft}
               </span>
             </div>
 
             <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#B7FF3C] uppercase font-bold">
-              240-FRAME
+              {hero.tagRight.split(' ')[0] || '240-FRAME'}
             </span>
           </motion.div>
 
@@ -145,10 +149,10 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
           >
             <div className="text-left">
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#B7FF3C] font-bold">
-                MARKETING BUILT FOR GROWTH.
+                {hero.headline}
               </div>
               <p className="text-xs text-white/70 font-light mt-0.5 leading-relaxed">
-                Strategy, creative, and performance engineered to move ambitious brands forward.
+                {hero.subtitle}
               </p>
             </div>
 
@@ -157,7 +161,7 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
                 onClick={onOpenProjectModal}
                 className="flex-1 py-2.5 px-3 rounded-full bg-[#B7FF3C] text-[#050505] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(183,255,60,0.3)]"
               >
-                <span>Start a Project</span>
+                <span>{hero.primaryCtaText}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
 
@@ -165,7 +169,7 @@ export default function ScrollStory({ onOpenProjectModal }: ScrollStoryProps) {
                 onClick={scrollToWork}
                 className="flex-1 py-2.5 px-3 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white/90 font-medium text-xs uppercase tracking-wider text-center"
               >
-                Explore Work
+                {hero.secondaryCtaText}
               </button>
             </div>
           </motion.div>

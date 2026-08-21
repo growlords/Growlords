@@ -1,0 +1,499 @@
+import { SiteContent } from '@/types/content';
+
+export const DEFAULT_SITE_CONTENT: SiteContent = {
+  seo: {
+    title: 'Growlords — Marketing Built for Growth',
+    description:
+      'Growlords is a growth-focused marketing agency combining strategy, creative, performance and technology to help ambitious brands grow.',
+    keywords: [
+      'Growlords',
+      'Growth Agency',
+      'Performance Marketing',
+      'Brand Strategy',
+      'Creative Studio',
+      'CRO',
+      'Web Design',
+      'Digital Marketing Agency',
+    ],
+    ogTitle: 'Growlords — Marketing Built for Growth',
+    ogDescription:
+      'Growlords is a growth-focused marketing agency combining strategy, creative, performance and technology to help ambitious brands grow.',
+    siteUrl: 'https://growlords.com',
+    themeColor: '#050505',
+  },
+  hero: {
+    tagLeft: 'GROWTH SYSTEM ARCHITECTURE',
+    tagRight: '240-FRAME CINEMATIC CORE',
+    headline: 'MARKETING BUILT FOR GROWTH.',
+    subtitle:
+      'Strategy, creative, and performance engineered to move ambitious brands forward.',
+    primaryCtaText: 'Start a Project',
+    secondaryCtaText: 'Explore Work',
+    scrollPromptText: 'SCROLL TO EXPLORE',
+  },
+  strategy: {
+    tag: '01 // STRATEGIC FRAMEWORK',
+    heading: "ATTENTION ISN'T THE GOAL.",
+    headingAccent: 'GROWTH IS.',
+    description:
+      "Great marketing doesn't simply create noise. It creates a clear, engineered path from initial attention to compounding enterprise action.",
+    principles: [
+      {
+        num: '01',
+        title: 'Understand.',
+        desc: 'Deconstruct market economics and buyer psychology.',
+      },
+      {
+        num: '02',
+        title: 'Position.',
+        desc: 'Establish an undeniable category-defining narrative.',
+      },
+      {
+        num: '03',
+        title: 'Connect.',
+        desc: 'Unify media, creative, and conversion funnels.',
+      },
+    ],
+  },
+  services: {
+    tag: 'CAPABILITIES & SERVICES',
+    heading: 'EVERYTHING YOUR',
+    headingAccent: 'GROWTH NEEDS.',
+    description:
+      "We don't operate in departmental silos. Every capability is deeply integrated into an omnichannel engine built to scale.",
+    items: [
+      {
+        id: 'perf',
+        number: '01',
+        title: 'PERFORMANCE MARKETING',
+        description:
+          'Paid social, Google Ads, acquisition campaigns, and performance optimization engineered for aggressive customer acquisition and sustainable ROAS.',
+        deliverables: [
+          'Meta & Google Ads Engine',
+          'Full-Funnel Paid Acquisition',
+          'Creative Performance Testing',
+          'Retargeting & LTV Architecture',
+          'Daily ROAS & CAC Optimization',
+        ],
+        metrics: 'Average 3.8x ROAS across active portfolio accounts',
+        ctaText: 'Deploy Performance Marketing',
+      },
+      {
+        id: 'social',
+        number: '02',
+        title: 'SOCIAL MEDIA',
+        description:
+          'Strategy, content, creative direction, and social growth designed to command cultural relevance and build compounding organic community equity.',
+        deliverables: [
+          'Short-Form Video Production',
+          'Organic Growth Playbooks',
+          'Creator & Influencer Partnerships',
+          'Community Management & Engagement',
+          'Viral Trend Capitalization',
+        ],
+        metrics: 'Over 45M+ organic impressions generated in 2025',
+        ctaText: 'Deploy Social Media',
+      },
+      {
+        id: 'brand',
+        number: '03',
+        title: 'BRAND STRATEGY',
+        description:
+          'Positioning, messaging, narrative frameworks, and visual identity systems that separate market leaders from commoditized competitors.',
+        deliverables: [
+          'Category Creation & Positioning',
+          'Core Brand Narrative & Voice',
+          'Visual Identity & Design Systems',
+          'Customer Persona Archetypes',
+          'Go-To-Market Brand Playbooks',
+        ],
+        metrics: 'Proprietary positioning frameworks for category leaders',
+        ctaText: 'Deploy Brand Strategy',
+      },
+      {
+        id: 'creative',
+        number: '04',
+        title: 'CREATIVE',
+        description:
+          'Campaign concepts, high-velocity ad creatives, short-form content, 3D assets, and visual storytelling that stop the scroll and compel action.',
+        deliverables: [
+          'High-Conversion UGC & Ad Studio',
+          'Motion Graphics & 3D Visuals',
+          'Editorial Campaign Direction',
+          'Dynamic Banner & Display Creative',
+          'A/B Creative Asset Batches',
+        ],
+        metrics: 'Weekly iteration cycles producing 30+ validated ad concepts',
+        ctaText: 'Deploy Creative',
+      },
+      {
+        id: 'web-cro',
+        number: '05',
+        title: 'WEB & CRO',
+        description:
+          'Websites, landing pages, friction-free funnels, and continuous conversion optimization designed to turn high-intent traffic into qualified pipeline.',
+        deliverables: [
+          'Next.js High-Speed Web Experiences',
+          'Frictionless Conversion Funnels',
+          'Multivariate Landing Page Testing',
+          'Heatmapping & Session Diagnostics',
+          'Checkout & Onboarding Streamlining',
+        ],
+        metrics: '+44% average conversion rate uplift post-redesign',
+        ctaText: 'Deploy Web & CRO',
+      },
+      {
+        id: 'growth-strat',
+        number: '06',
+        title: 'GROWTH STRATEGY',
+        description:
+          'Analytics, experimentation pipelines, customer journey orchestration, and scalable growth engines that compound enterprise value.',
+        deliverables: [
+          'Multi-Touch Attribution Modeling',
+          'Cohort Retention & Churn Reduction',
+          'Rapid Growth Experimentation Engine',
+          'Modern Data Stack Integration',
+          'Executive Growth Telemetry',
+        ],
+        metrics: 'End-to-end telemetry unifying media, CRM, and revenue',
+        ctaText: 'Deploy Growth Strategy',
+      },
+    ],
+  },
+  caseStudies: {
+    tag: 'CASE STUDIES & IMPACT',
+    heading: "WE DON'T SELL MARKETING.",
+    headingAccent: 'WE SHOW RESULTS.',
+    description:
+      'Real systems. Engineered architectures. Measurable enterprise value created across categories.',
+    items: [
+      {
+        id: 'case-01',
+        number: '01',
+        title: 'Omnichannel Growth Engine for Next-Gen Fintech',
+        client: 'Fintech Scaleup (Series B)',
+        industry: 'Financial Technology / Wealth Infrastructure',
+        challenge:
+          'High Customer Acquisition Cost (CAC) and steep funnel drop-off on mobile onboarding, resulting in stagnant monthly active account growth despite increased ad spend.',
+        strategy:
+          'Re-architected the entire positioning framework around financial sovereignty, deployed high-velocity video UGC campaigns, and rebuilt the onboarding flow using Next.js micro-funnels.',
+        execution:
+          'Combined paid Meta/Google intent campaigns with bespoke interactive conversion calculators and automated lifecycle email sequences.',
+        results: [
+          { label: 'CAC Reduction', value: '-42%', sublabel: 'Across all acquisition channels' },
+          { label: 'Conversion Uplift', value: '+188%', sublabel: 'Onboarding completion rate' },
+          { label: 'Net ARR Growth', value: '$12.4M', sublabel: 'Added within 8 months' },
+        ],
+        services: ['Performance Marketing', 'Web & CRO', 'Brand Strategy', 'Growth Strategy'],
+        accentColor: '#B7FF3C',
+      },
+      {
+        id: 'case-02',
+        number: '02',
+        title: 'Category Creation & Global Direct-to-Consumer Scale',
+        client: 'Luxury Wellness & Longevity DTC',
+        industry: 'Premium Consumer Goods',
+        challenge:
+          'Stuck in a low-margin commodity supplement perception with blended ROAS dropping below 1.6x on legacy ad accounts.',
+        strategy:
+          'Elevated brand narrative into clinical bio-optimization luxury. Created cinematic 3D visual assets and implemented high-AOV bundle merchandising models.',
+        execution:
+          'Deployed top-of-funnel cinematic video ads paired with editorial landing pages, influencer seeding, and retention-focused subscription incentives.',
+        results: [
+          { label: 'Blended ROAS', value: '4.4x', sublabel: 'Scalable spend above $250k/mo' },
+          { label: 'Average Order Value', value: '+$68', sublabel: 'Driven by multi-tier bundles' },
+          { label: 'Subscription Rate', value: '64%', sublabel: 'Recurring revenue adoption' },
+        ],
+        services: ['Creative', 'Performance Marketing', 'Social Media', 'Web & CRO'],
+        accentColor: '#D7FF7A',
+      },
+      {
+        id: 'case-03',
+        number: '03',
+        title: 'Enterprise Pipeline Velocity for AI Infrastructure SaaS',
+        client: 'AI Developer Platform (Series A)',
+        industry: 'B2B Enterprise Software / Developer Tools',
+        challenge:
+          'Highly technical product failing to communicate ROI to C-suite economic buyers while developer signups were not converting to enterprise contracts.',
+        strategy:
+          'Created a dual-track messaging engine: frictionless self-serve developer sandboxes + executive ROI whitepaper funnels and ABM LinkedIn targeting.',
+        execution:
+          'Engineered interactive product tour experiences, hyper-targeted account-based advertising, and behavioral retargeting based on API usage metrics.',
+        results: [
+          { label: 'Enterprise SQLs', value: '+310%', sublabel: 'Qualified pipeline volume' },
+          { label: 'Sales Cycle Velocity', value: '-35 Days', sublabel: 'From lead to contract signed' },
+          { label: 'Pipeline Value', value: '$8.2M', sublabel: 'Generated in 2 quarters' },
+        ],
+        services: ['Brand Strategy', 'Performance Marketing', 'Growth Strategy', 'Creative'],
+        accentColor: '#B7FF3C',
+      },
+      {
+        id: 'case-04',
+        number: '04',
+        title: 'Viral Social Distribution & Brand Equity Expansion',
+        client: 'Modern Lifestyle & Media Brand',
+        industry: 'Digital Media & Apparel',
+        challenge:
+          'Over-reliance on discounting with zero organic brand pull and declining organic engagement across social channels.',
+        strategy:
+          'Built a dedicated short-form creator studio producing 40+ culture-first video concepts weekly, paired with limited-edition drop mechanics.',
+        execution:
+          'Orchestrated synchronized multi-channel drops across TikTok, Instagram Reels, and VIP SMS subscriber list with live countdowns.',
+        results: [
+          { label: 'Organic Impressions', value: '62M+', sublabel: '100% organic reach' },
+          { label: 'Sold Out Launches', value: '< 14 Min', sublabel: 'Average sellout time' },
+          { label: 'Customer Retention', value: '72%', sublabel: '90-day repeat purchase rate' },
+        ],
+        services: ['Social Media', 'Creative', 'Growth Strategy', 'Web & CRO'],
+        accentColor: '#D7FF7A',
+      },
+    ],
+  },
+  testimonials: {
+    tag: 'CLIENT ENDORSEMENTS & TRUST',
+    heading: 'PARTNERSHIP AT',
+    headingAccent: 'THE HIGHEST LEVEL.',
+    description:
+      'Hear directly from founders, venture operators, and growth leaders who have scaled their category footprint with Growlords.',
+    items: [
+      {
+        id: 'test-01',
+        quote:
+          'Growlords completely re-engineered our acquisition machinery. Within 90 days, our customer acquisition cost dropped by 42% while monthly recurring revenue grew by 3.2x.',
+        author: 'Alexander Vance',
+        role: 'Chief Executive Officer',
+        company: 'Aura Financial',
+        metric: '+320%',
+        metricLabel: 'ARR Acceleration',
+        rating: 5,
+        avatarText: 'AV',
+      },
+      {
+        id: 'test-02',
+        quote:
+          'Most agencies pitch vanity metrics. Growlords came in and treated our capital like it was their own, building high-converting creative engines that scaled our blended ROAS to 4.4x.',
+        author: 'Elena Rostova',
+        role: 'Head of Growth',
+        company: 'Kinetix Bio-Systems',
+        metric: '4.4x',
+        metricLabel: 'Blended ROAS',
+        rating: 5,
+        avatarText: 'ER',
+      },
+      {
+        id: 'test-03',
+        quote:
+          'The caliber of their creative direction paired with rigorous technical growth strategy is unmatched. They don\'t just deliver campaigns; they build enterprise value.',
+        author: 'Marcus Sterling',
+        role: 'Managing Partner',
+        company: 'Vectis Capital',
+        metric: '$12.4M',
+        metricLabel: 'Net Pipeline Added',
+        rating: 5,
+        avatarText: 'MS',
+      },
+    ],
+  },
+  analytics: {
+    tag: 'LIVE SYSTEM TELEMETRY',
+    heading: 'METRICS THAT MOVE',
+    headingAccent: 'THE NEEDLE.',
+    description:
+      'Continuous telemetry tracking live portfolio velocity across acquisition, conversion, and compounded enterprise revenue.',
+    metrics: [
+      {
+        key: 'revenue',
+        name: 'Net Revenue Scaling',
+        headlineValue: '$18.4M',
+        growth: '+284%',
+        benchmark: 'Compounded ARR Growth over 12 Months',
+        description:
+          'Continuous full-funnel optimization compound revenue velocity while maintaining sustainable EBITDA margins.',
+        chartData: [
+          { x: 'Q1', y: 20, baseline: 15 },
+          { x: 'Q2', y: 38, baseline: 22 },
+          { x: 'Q3', y: 64, baseline: 30 },
+          { x: 'Q4', y: 92, baseline: 40 },
+        ],
+        unit: '$',
+      },
+      {
+        key: 'roAS',
+        name: 'Blended ROAS Scale',
+        headlineValue: '4.62x',
+        growth: '+140%',
+        benchmark: 'Average Across Omnichannel Media Spend',
+        description:
+          'Predictive algorithmic bidding paired with high-volume creative iteration unlocks aggressive budget scale without return decay.',
+        chartData: [
+          { x: 'Q1', y: 28, baseline: 22 },
+          { x: 'Q2', y: 50, baseline: 26 },
+          { x: 'Q3', y: 76, baseline: 31 },
+          { x: 'Q4', y: 95, baseline: 38 },
+        ],
+        unit: 'x',
+      },
+      {
+        key: 'cac',
+        name: 'Customer Acquisition Cost',
+        headlineValue: '-46.8%',
+        growth: 'Optimized',
+        benchmark: 'CAC Compression via Frictionless CRO Funnels',
+        description:
+          'Dynamic landing page personalization and micro-conversion architecture drive radical acquisition cost reductions.',
+        chartData: [
+          { x: 'Q1', y: 88, baseline: 80 },
+          { x: 'Q2', y: 62, baseline: 75 },
+          { x: 'Q3', y: 44, baseline: 70 },
+          { x: 'Q4', y: 25, baseline: 68 },
+        ],
+        unit: '%',
+      },
+      {
+        key: 'traffic',
+        name: 'High-Intent Traffic',
+        headlineValue: '2.85M',
+        growth: '+312%',
+        benchmark: 'Omnichannel Inbound & Targeted Demand',
+        description:
+          'Multi-engine organic distribution and paid demand generation funneling high-intent ICP buyers directly into your ecosystem.',
+        chartData: [
+          { x: 'Q1', y: 25, baseline: 20 },
+          { x: 'Q2', y: 45, baseline: 28 },
+          { x: 'Q3', y: 72, baseline: 36 },
+          { x: 'Q4', y: 96, baseline: 45 },
+        ],
+        unit: '',
+      },
+      {
+        key: 'leads',
+        name: 'Qualified Pipeline',
+        headlineValue: '14,200+',
+        growth: '+220%',
+        benchmark: 'Sales-Ready Enterprise Opportunities',
+        description:
+          'Automated qualification funnels and ABM intelligence ensure sales teams engage exclusively with high-LTV opportunities.',
+        chartData: [
+          { x: 'Q1', y: 18, baseline: 14 },
+          { x: 'Q2', y: 36, baseline: 20 },
+          { x: 'Q3', y: 68, baseline: 28 },
+          { x: 'Q4', y: 98, baseline: 34 },
+        ],
+        unit: '+',
+      },
+    ],
+  },
+  whyGrowlords: {
+    tag: 'CORE OPERATING PILLARS',
+    heading: 'WHY',
+    headingAccent: 'GROWLORDS?',
+    description:
+      'Most agencies operate on vanity activity. We operate on mathematical compounding. Here is the operational philosophy behind our work.',
+    pillars: [
+      {
+        number: '01',
+        title: 'STRATEGY FIRST',
+        tagline: 'No random campaigns. Every action has a reason.',
+        description:
+          'Before running a single ad or writing a line of copy, we deconstruct your market economics, competitive white space, and customer psychology to establish an unfair positioning moat.',
+      },
+      {
+        number: '02',
+        title: 'CREATIVE THAT MOVES',
+        tagline: 'Ideas designed to stop the scroll and move people to act.',
+        description:
+          'Aesthetics without conversion is vanity. Performance without craft is commoditized noise. We engineer high-velocity creative assets that command attention and convert intent into enterprise revenue.',
+      },
+      {
+        number: '03',
+        title: 'DATA WITHOUT THE BORING',
+        tagline: 'We use numbers to make smarter marketing decisions.',
+        description:
+          'We replace vanity dashboard fluff with clear, actionable growth telemetry. Real-time attribution, cohort LTV analysis, and contribution margin tracking guide every allocation of capital.',
+      },
+      {
+        number: '04',
+        title: 'OBSESSED WITH GROWTH',
+        tagline: 'We care about business outcomes, not vanity metrics.',
+        description:
+          'We align directly with your North Star: qualified pipeline, net new ARR, blended contribution margin, and enterprise enterprise value. If it does not move the P&L, we do not do it.',
+      },
+    ],
+  },
+  about: {
+    tag: 'AGENCY MANIFESTO',
+    heading: "WE'RE",
+    headingAccent: 'GROWLORDS.',
+    subtitle:
+      'A growth-focused marketing agency built for brands that refuse to stay ordinary.',
+    description:
+      "We bring strategy, creativity, technology, and performance together because modern growth doesn't happen in silos. We build the connected machinery that makes category leaders inevitable.",
+    ctaText: 'Partner with Us',
+    mandates: [
+      {
+        tag: 'OUR MANDATE',
+        title: 'Eliminate Growth Friction',
+        description:
+          'We diagnose every point of drop-off in your brand ecosystem—from initial impression to checkout—and rebuild it into a high-converting growth vector.',
+        iconName: 'Target',
+      },
+      {
+        tag: 'OUR PERSPECTIVE',
+        title: 'Craft Is The Ultimate Moat',
+        description:
+          'When performance marketing becomes algorithmic, world-class taste, cinematic narrative, and unmatched execution become the only sustainable differentiators.',
+        iconName: 'Compass',
+      },
+      {
+        tag: 'OUR COMMITMENT',
+        title: 'Compounding Partnership',
+        description:
+          'We operate as an embedded growth team, sharing high conviction and engineering systems that compound in enterprise value quarter over quarter.',
+        iconName: 'Network',
+      },
+    ],
+  },
+  finalCta: {
+    tag: 'INITIATE GROWTH ENGAGEMENT',
+    heading: 'READY TO',
+    headingAccent: 'GROW?',
+    description:
+      "Let's build something people notice — and a growth system that makes it matter.",
+    primaryCtaText: 'Start a Project',
+    secondaryCtaText: 'View Our Work',
+    trustBadges: [
+      '• SELECTIVE PARTNERSHIPS',
+      '• DIRECT FOUNDER ACCESS',
+      '• GLOBAL REACH',
+    ],
+  },
+  footer: {
+    brandName: 'GROWLORDS',
+    brandDescription:
+      'Marketing built for growth. Engineering unified brand, creative, and performance systems for market leaders.',
+    navLinks: [
+      { name: 'Work', href: '#work' },
+      { name: 'Services', href: '#services' },
+      { name: 'Why Growlords', href: '#why' },
+      { name: 'Testimonials', href: '#testimonials' },
+      { name: 'Analytics', href: '#analytics' },
+      { name: 'About', href: '#about' },
+    ],
+    socialLinks: [
+      { name: 'Instagram', href: 'https://instagram.com' },
+      { name: 'LinkedIn', href: 'https://linkedin.com' },
+      { name: 'YouTube', href: 'https://youtube.com' },
+      { name: 'X / Twitter', href: 'https://x.com' },
+    ],
+    directEmail: 'partnerships@growlords.com',
+    officesText:
+      'Offices in New York, London, and Singapore. Direct global remote engagements.',
+    ctaLabel: 'Initiate Brief',
+    copyrightText: 'Growlords Agency Group. All rights reserved.',
+    legalLinks: [
+      { name: 'Privacy Policy', href: '#' },
+      { name: 'Terms of Growth', href: '#' },
+      { name: 'System Security', href: '#' },
+    ],
+  },
+};

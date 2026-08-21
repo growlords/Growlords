@@ -2,40 +2,13 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PillarItem } from '@/types';
-
-const pillars: PillarItem[] = [
-  {
-    number: '01',
-    title: 'STRATEGY FIRST',
-    tagline: 'No random campaigns. Every action has a reason.',
-    description:
-      'Before running a single ad or writing a line of copy, we deconstruct your market economics, competitive white space, and customer psychology to establish an unfair positioning moat.',
-  },
-  {
-    number: '02',
-    title: 'CREATIVE THAT MOVES',
-    tagline: 'Ideas designed to stop the scroll and move people to act.',
-    description:
-      'Aesthetics without conversion is vanity. Performance without craft is commoditized noise. We engineer high-velocity creative assets that command attention and convert intent into enterprise revenue.',
-  },
-  {
-    number: '03',
-    title: 'DATA WITHOUT THE BORING',
-    tagline: 'We use numbers to make smarter marketing decisions.',
-    description:
-      'We replace vanity dashboard fluff with clear, actionable growth telemetry. Real-time attribution, cohort LTV analysis, and contribution margin tracking guide every allocation of capital.',
-  },
-  {
-    number: '04',
-    title: 'OBSESSED WITH GROWTH',
-    tagline: 'We care about business outcomes, not vanity metrics.',
-    description:
-      'We align directly with your North Star: qualified pipeline, net new ARR, blended contribution margin, and enterprise enterprise value. If it does not move the P&L, we do not do it.',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export default function WhyGrowlords() {
+  const { content } = useContent();
+  const whyGrowlords = content.whyGrowlords;
+  const pillars = whyGrowlords.pillars || [];
+
   return (
     <section id="why" className="relative w-full py-20 sm:py-28 md:py-32 bg-[#050505] text-white border-t border-white/5 overflow-hidden">
       {/* Editorial background accents */}
@@ -46,14 +19,14 @@ export default function WhyGrowlords() {
         <div className="max-w-3xl mb-12 sm:mb-16 md:mb-24">
           <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#B7FF3C] uppercase mb-4">
             <span className="w-5 sm:w-6 h-[1px] bg-[#B7FF3C]" />
-            CORE OPERATING PILLARS
+            {whyGrowlords.tag || 'CORE OPERATING PILLARS'}
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight font-heading leading-[0.98]">
-            WHY <br />
-            <span className="text-[#B7FF3C]">GROWLORDS?</span>
+            {whyGrowlords.heading} <br />
+            <span className="text-[#B7FF3C]">{whyGrowlords.headingAccent}</span>
           </h2>
           <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/70 font-light leading-relaxed">
-            Most agencies operate on vanity activity. We operate on mathematical compounding. Here is the operational philosophy behind our work.
+            {whyGrowlords.description}
           </p>
         </div>
 

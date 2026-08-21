@@ -4,95 +4,17 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, X, TrendingUp, Sparkles, Layers, ShieldCheck } from 'lucide-react';
 import { CaseStudyItem } from '@/types';
+import { useContent } from '@/context/ContentContext';
 
 interface CaseStudiesProps {
   onOpenProjectModal: () => void;
 }
 
-const caseStudiesData: CaseStudyItem[] = [
-  {
-    id: 'case-01',
-    number: '01',
-    title: 'Omnichannel Growth Engine for Next-Gen Fintech',
-    client: 'Fintech Scaleup (Series B)',
-    industry: 'Financial Technology / Wealth Infrastructure',
-    challenge:
-      'High Customer Acquisition Cost (CAC) and steep funnel drop-off on mobile onboarding, resulting in stagnant monthly active account growth despite increased ad spend.',
-    strategy:
-      'Re-architected the entire positioning framework around financial sovereignty, deployed high-velocity video UGC campaigns, and rebuilt the onboarding flow using Next.js micro-funnels.',
-    execution:
-      'Combined paid Meta/Google intent campaigns with bespoke interactive conversion calculators and automated lifecycle email sequences.',
-    results: [
-      { label: 'CAC Reduction', value: '-42%', sublabel: 'Across all acquisition channels' },
-      { label: 'Conversion Uplift', value: '+188%', sublabel: 'Onboarding completion rate' },
-      { label: 'Net ARR Growth', value: '$12.4M', sublabel: 'Added within 8 months' },
-    ],
-    services: ['Performance Marketing', 'Web & CRO', 'Brand Strategy', 'Growth Strategy'],
-    accentColor: '#B7FF3C',
-  },
-  {
-    id: 'case-02',
-    number: '02',
-    title: 'Category Creation & Global Direct-to-Consumer Scale',
-    client: 'Luxury Wellness & Longevity DTC',
-    industry: 'Premium Consumer Goods',
-    challenge:
-      'Stuck in a low-margin commodity supplement perception with blended ROAS dropping below 1.6x on legacy ad accounts.',
-    strategy:
-      'Elevated brand narrative into clinical bio-optimization luxury. Created cinematic 3D visual assets and implemented high-AOV bundle merchandising models.',
-    execution:
-      'Deployed top-of-funnel cinematic video ads paired with editorial landing pages, influencer seeding, and retention-focused subscription incentives.',
-    results: [
-      { label: 'Blended ROAS', value: '4.4x', sublabel: 'Scalable spend above $250k/mo' },
-      { label: 'Average Order Value', value: '+$68', sublabel: 'Driven by multi-tier bundles' },
-      { label: 'Subscription Rate', value: '64%', sublabel: 'Recurring revenue adoption' },
-    ],
-    services: ['Creative', 'Performance Marketing', 'Social Media', 'Web & CRO'],
-    accentColor: '#D7FF7A',
-  },
-  {
-    id: 'case-03',
-    number: '03',
-    title: 'Enterprise Pipeline Velocity for AI Infrastructure SaaS',
-    client: 'AI Developer Platform (Series A)',
-    industry: 'B2B Enterprise Software / Developer Tools',
-    challenge:
-      'Highly technical product failing to communicate ROI to C-suite economic buyers while developer signups were not converting to enterprise contracts.',
-    strategy:
-      'Created a dual-track messaging engine: frictionless self-serve developer sandboxes + executive ROI whitepaper funnels and ABM LinkedIn targeting.',
-    execution:
-      'Engineered interactive product tour experiences, hyper-targeted account-based advertising, and behavioral retargeting based on API usage metrics.',
-    results: [
-      { label: 'Enterprise SQLs', value: '+310%', sublabel: 'Qualified pipeline volume' },
-      { label: 'Sales Cycle Velocity', value: '-35 Days', sublabel: 'From lead to contract signed' },
-      { label: 'Pipeline Value', value: '$8.2M', sublabel: 'Generated in 2 quarters' },
-    ],
-    services: ['Brand Strategy', 'Performance Marketing', 'Growth Strategy', 'Creative'],
-    accentColor: '#B7FF3C',
-  },
-  {
-    id: 'case-04',
-    number: '04',
-    title: 'Viral Social Distribution & Brand Equity Expansion',
-    client: 'Modern Lifestyle & Media Brand',
-    industry: 'Digital Media & Apparel',
-    challenge:
-      'Over-reliance on discounting with zero organic brand pull and declining organic engagement across social channels.',
-    strategy:
-      'Built a dedicated short-form creator studio producing 40+ culture-first video concepts weekly, paired with limited-edition drop mechanics.',
-    execution:
-      'Orchestrated synchronized multi-channel drops across TikTok, Instagram Reels, and VIP SMS subscriber list with live countdowns.',
-    results: [
-      { label: 'Organic Impressions', value: '62M+', sublabel: '100% organic reach' },
-      { label: 'Sold Out Launches', value: '< 14 Min', sublabel: 'Average sellout time' },
-      { label: 'Customer Retention', value: '72%', sublabel: '90-day repeat purchase rate' },
-    ],
-    services: ['Social Media', 'Creative', 'Growth Strategy', 'Web & CRO'],
-    accentColor: '#D7FF7A',
-  },
-];
-
 export default function CaseStudies({ onOpenProjectModal }: CaseStudiesProps) {
+  const { content } = useContent();
+  const caseStudies = content.caseStudies;
+  const items = caseStudies.items || [];
+
   const [selectedCase, setSelectedCase] = useState<CaseStudyItem | null>(null);
 
   return (
@@ -103,22 +25,22 @@ export default function CaseStudies({ onOpenProjectModal }: CaseStudiesProps) {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#B7FF3C] uppercase mb-4">
               <span className="w-5 sm:w-6 h-[1px] bg-[#B7FF3C]" />
-              CASE STUDIES & IMPACT
+              {caseStudies.tag || 'CASE STUDIES & IMPACT'}
             </div>
             <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight font-heading leading-[0.98]">
-              WE DON'T SELL MARKETING. <br />
-              <span className="text-[#B7FF3C]">WE SHOW RESULTS.</span>
+              {caseStudies.heading} <br />
+              <span className="text-[#B7FF3C]">{caseStudies.headingAccent}</span>
             </h2>
           </div>
 
           <p className="text-sm sm:text-base md:text-lg text-white/60 max-w-md font-light leading-relaxed">
-            Real systems. Engineered architectures. Measurable enterprise value created across categories.
+            {caseStudies.description}
           </p>
         </div>
 
         {/* Case Studies 2x2 Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {caseStudiesData.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedCase(item)}
@@ -157,7 +79,7 @@ export default function CaseStudies({ onOpenProjectModal }: CaseStudiesProps) {
 
                 {/* Services Tags */}
                 <div className="mt-5 sm:mt-6 flex flex-wrap gap-1.5 sm:gap-2">
-                  {item.services.map((svc, i) => (
+                  {(item.services || []).map((svc, i) => (
                     <span
                       key={i}
                       className="text-[10px] sm:text-[11px] font-mono px-2.5 sm:px-3 py-1 rounded-full bg-white/5 text-white/80 border border-white/5"
@@ -170,7 +92,7 @@ export default function CaseStudies({ onOpenProjectModal }: CaseStudiesProps) {
 
               {/* Key Results Showcase */}
               <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4">
-                {item.results.map((res, i) => (
+                {(item.results || []).map((res, i) => (
                   <div key={i}>
                     <div className="text-lg sm:text-xl md:text-2xl font-black font-heading text-white group-hover:text-[#B7FF3C] transition-colors">
                       {res.value}
@@ -232,7 +154,7 @@ export default function CaseStudies({ onOpenProjectModal }: CaseStudiesProps) {
 
               {/* Metrics Banner */}
               <div className="mt-6 sm:mt-8 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-[#111114] border border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-left">
-                {selectedCase.results.map((res, i) => (
+                {(selectedCase.results || []).map((res, i) => (
                   <div key={i} className="border-b sm:border-b-0 sm:border-r border-white/10 pb-3 sm:pb-0 last:border-none">
                     <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-heading text-[#B7FF3C]">
                       {res.value}

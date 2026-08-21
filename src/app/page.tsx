@@ -7,6 +7,7 @@ import ScrollStory from '@/components/ScrollStory';
 import StrategySection from '@/components/StrategySection';
 import Services from '@/components/Services';
 import CaseStudies from '@/components/CaseStudies';
+import Testimonials from '@/components/Testimonials';
 import GrowthAnalytics from '@/components/GrowthAnalytics';
 import WhyGrowlords from '@/components/WhyGrowlords';
 import About from '@/components/About';
@@ -14,6 +15,7 @@ import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import ProjectModal from '@/components/ProjectModal';
 import SoundControl from '@/components/SoundControl';
+import CMSBadge from '@/components/CMSBadge';
 
 export default function Home() {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
@@ -43,20 +45,23 @@ export default function Home() {
         {/* 4. Case Studies & Proven Results */}
         <CaseStudies onOpenProjectModal={handleOpenProjectModal} />
 
-        {/* 5. Live Growth Telemetry & Analytics Visualizer */}
+        {/* 5. Client Testimonials & Endorsements */}
+        <Testimonials />
+
+        {/* 6. Live Growth Telemetry & Analytics Visualizer */}
         <GrowthAnalytics />
 
-        {/* 6. Why Growlords - 4 Core Principles */}
+        {/* 7. Why Growlords - 4 Core Principles */}
         <WhyGrowlords />
 
-        {/* 7. Editorial Agency Manifesto */}
+        {/* 8. Editorial Agency Manifesto */}
         <About onOpenProjectModal={handleOpenProjectModal} />
 
-        {/* 8. Final High-Impact Conversion Section */}
+        {/* 9. Final High-Impact Conversion Section */}
         <FinalCTA onOpenProjectModal={handleOpenProjectModal} />
       </main>
 
-      {/* 9. Minimalist Editorial Footer */}
+      {/* 10. Minimalist Editorial Footer */}
       <Footer onOpenProjectModal={handleOpenProjectModal} />
 
       {/* Interactive Project Inquiry Modal */}
@@ -67,6 +72,9 @@ export default function Home() {
 
       {/* Non-intrusive Futuristic Sci-Fi Audio Control (Bottom-Right) */}
       <SoundControl />
+
+      {/* Discreet Floating CMS Studio Launcher */}
+      <CMSBadge />
     </div>
   );
 }

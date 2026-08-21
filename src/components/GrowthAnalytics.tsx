@@ -3,130 +3,42 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Activity, Zap } from 'lucide-react';
-import { AnalyticsMetric } from '@/types';
-
-const analyticsMetrics: AnalyticsMetric[] = [
-  {
-    key: 'revenue',
-    name: 'Net Revenue Scaling',
-    headlineValue: '$18.4M',
-    growth: '+284%',
-    benchmark: 'Compounded ARR Growth over 12 Months',
-    description:
-      'Continuous full-funnel optimization compound revenue velocity while maintaining sustainable EBITDA margins.',
-    chartData: [
-      { x: 'Q1', y: 20, baseline: 15 },
-      { x: 'Q2', y: 38, baseline: 22 },
-      { x: 'Q3', y: 64, baseline: 30 },
-      { x: 'Q4', y: 92, baseline: 40 },
-    ],
-    unit: '$',
-  },
-  {
-    key: 'roas',
-    name: 'Blended ROAS Scale',
-    headlineValue: '4.62x',
-    growth: '+140%',
-    benchmark: 'Average Across Omnichannel Media Spend',
-    description:
-      'Predictive algorithmic bidding paired with high-volume creative iteration unlocks aggressive budget scale without return decay.',
-    chartData: [
-      { x: 'Q1', y: 28, baseline: 22 },
-      { x: 'Q2', y: 50, baseline: 26 },
-      { x: 'Q3', y: 76, baseline: 31 },
-      { x: 'Q4', y: 95, baseline: 38 },
-    ],
-    unit: 'x',
-  },
-  {
-    key: 'cac',
-    name: 'Customer Acquisition Cost',
-    headlineValue: '-46.8%',
-    growth: 'Optimized',
-    benchmark: 'CAC Compression via Frictionless CRO Funnels',
-    description:
-      'Dynamic landing page personalization and micro-conversion architecture drive radical acquisition cost reductions.',
-    chartData: [
-      { x: 'Q1', y: 88, baseline: 80 },
-      { x: 'Q2', y: 62, baseline: 75 },
-      { x: 'Q3', y: 44, baseline: 70 },
-      { x: 'Q4', y: 25, baseline: 68 },
-    ],
-    unit: '%',
-  },
-  {
-    key: 'traffic',
-    name: 'High-Intent Traffic',
-    headlineValue: '2.85M',
-    growth: '+312%',
-    benchmark: 'Omnichannel Inbound & Targeted Demand',
-    description:
-      'Multi-engine organic distribution and paid demand generation funneling high-intent ICP buyers directly into your ecosystem.',
-    chartData: [
-      { x: 'Q1', y: 25, baseline: 20 },
-      { x: 'Q2', y: 45, baseline: 28 },
-      { x: 'Q3', y: 72, baseline: 36 },
-      { x: 'Q4', y: 96, baseline: 45 },
-    ],
-    unit: '',
-  },
-  {
-    key: 'leads',
-    name: 'Qualified Pipeline',
-    headlineValue: '14,200+',
-    growth: '+220%',
-    benchmark: 'Sales-Ready Enterprise Opportunities',
-    description:
-      'Automated qualification funnels and ABM intelligence ensure sales teams engage exclusively with high-LTV opportunities.',
-    chartData: [
-      { x: 'Q1', y: 18, baseline: 16 },
-      { x: 'Q2', y: 42, baseline: 24 },
-      { x: 'Q3', y: 68, baseline: 32 },
-      { x: 'Q4', y: 90, baseline: 40 },
-    ],
-    unit: '',
-  },
-  {
-    key: 'conversion',
-    name: 'Conversion Rate',
-    headlineValue: '6.84%',
-    growth: '+185%',
-    benchmark: 'Global Funnel & Checkout Velocity',
-    description:
-      'Next.js micro-experiences and frictionless form architecture maximizing the revenue yield of every visitor.',
-    chartData: [
-      { x: 'Q1', y: 30, baseline: 25 },
-      { x: 'Q2', y: 52, baseline: 28 },
-      { x: 'Q3', y: 74, baseline: 33 },
-      { x: 'Q4', y: 94, baseline: 36 },
-    ],
-    unit: '%',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export default function GrowthAnalytics() {
-  const [activeKey, setActiveKey] = useState('revenue');
+  const { content } = useContent();
+  const analytics = content.analytics;
+  const metricsList = analytics.metrics || [];
 
-  const currentMetric = analyticsMetrics.find((m) => m.key === activeKey) || analyticsMetrics[0];
+  const [activeKey, setActiveKey] = useState(metricsList[0]?.key || 'revenue');
+
+  const currentMetric = metricsList.find((m) => m.key === activeKey) || metricsList[0];
+
+  if (!currentMetric) return null;
 
   // Helper to generate SVG Path points
-  const points = currentMetric.chartData.map((d, i) => {
+  const points = (currentMetric.chartData || []).map((d, i) => {
     const x = 50 + i * 260;
     const y = 260 - (d.y / 100) * 200;
     return { x, y, label: d.x };
   });
 
-  const pathD = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ');
+  const pathD =
+    points.length > 0
+      ? `M ${points[0].x} ${points[0].y} ` + points.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ')
+      : '';
 
-  const baselinePoints = currentMetric.chartData.map((d, i) => {
+  const baselinePoints = (currentMetric.chartData || []).map((d, i) => {
     const x = 50 + i * 260;
     const y = 260 - (d.baseline / 100) * 200;
     return { x, y };
   });
 
   const baselinePathD =
-    `M ${baselinePoints[0].x} ${baselinePoints[0].y} ` +
-    baselinePoints.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ');
+    baselinePoints.length > 0
+      ? `M ${baselinePoints[0].x} ${baselinePoints[0].y} ` +
+        baselinePoints.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ')
+      : '';
 
   return (
     <section id="analytics" className="relative w-full py-20 sm:py-28 md:py-32 bg-[#050505] text-white border-t border-white/5">
@@ -139,22 +51,22 @@ export default function GrowthAnalytics() {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#B7FF3C] uppercase mb-4">
               <Activity className="w-3.5 h-3.5" />
-              LIVE TELEMETRY & ATTRIBUTION
+              {analytics.tag || 'LIVE TELEMETRY & ATTRIBUTION'}
             </div>
             <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight font-heading leading-[0.98]">
-              WATCH THE <br />
-              <span className="text-[#B7FF3C]">SYSTEM WORK.</span>
+              {analytics.heading} <br />
+              <span className="text-[#B7FF3C]">{analytics.headingAccent}</span>
             </h2>
           </div>
 
           <p className="text-sm sm:text-base md:text-lg text-white/60 max-w-md font-light leading-relaxed">
-            Real-time compounding growth visualizer. Toggle metric lenses to inspect how our connected architecture scales every layer.
+            {analytics.description}
           </p>
         </div>
 
         {/* Metric Selector Tabs */}
         <div className="flex flex-wrap gap-2 sm:gap-2.5 mb-8 sm:mb-10 pb-4 border-b border-white/10">
-          {analyticsMetrics.map((metric) => {
+          {metricsList.map((metric) => {
             const isActive = metric.key === activeKey;
             return (
               <button
@@ -226,26 +138,30 @@ export default function GrowthAnalytics() {
                 ))}
 
                 {/* Legacy / Baseline dashed line */}
-                <path
-                  d={baselinePathD}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.2)"
-                  strokeWidth="2"
-                  strokeDasharray="6 6"
-                />
+                {baselinePathD && (
+                  <path
+                    d={baselinePathD}
+                    fill="none"
+                    stroke="rgba(255,255,255,0.2)"
+                    strokeWidth="2"
+                    strokeDasharray="6 6"
+                  />
+                )}
 
                 {/* Growlords Glowing Accent Line */}
-                <motion.path
-                  key={currentMetric.key}
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
-                  d={pathD}
-                  fill="none"
-                  stroke="#B7FF3C"
-                  strokeWidth="3.5"
-                  className="drop-shadow-[0_0_12px_#B7FF3C]"
-                />
+                {pathD && (
+                  <motion.path
+                    key={currentMetric.key}
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                    d={pathD}
+                    fill="none"
+                    stroke="#B7FF3C"
+                    strokeWidth="3.5"
+                    className="drop-shadow-[0_0_12px_#B7FF3C]"
+                  />
+                )}
 
                 {/* Points */}
                 {points.map((pt, i) => (

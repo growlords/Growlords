@@ -3,12 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useContent } from '@/context/ContentContext';
 
 interface NavbarProps {
   onOpenProjectModal: () => void;
 }
 
 export default function Navbar({ onOpenProjectModal }: NavbarProps) {
+  const { content } = useContent();
+  const footer = content.footer;
+  const hero = content.hero;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -20,20 +24,25 @@ export default function Navbar({ onOpenProjectModal }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Work', href: '#work' },
-    { name: 'Services', href: '#services' },
-    { name: 'Why Growlords', href: '#why' },
-    { name: 'Analytics', href: '#analytics' },
-    { name: 'About', href: '#about' },
-  ];
+  const navLinks = footer.navLinks?.length
+    ? footer.navLinks
+    : [
+        { name: 'Work', href: '#work' },
+        { name: 'Services', href: '#services' },
+        { name: 'Why Growlords', href: '#why' },
+        { name: 'Testimonials', href: '#testimonials' },
+        { name: 'Analytics', href: '#analytics' },
+        { name: 'About', href: '#about' },
+      ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      setMobileMenuOpen(false);
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -55,7 +64,7 @@ export default function Navbar({ onOpenProjectModal }: NavbarProps) {
           >
             <div className="w-2.5 h-2.5 rounded-full bg-[#B7FF3C] group-hover:scale-125 transition-transform duration-300 shadow-[0_0_8px_#B7FF3C]" />
             <span className="text-base sm:text-lg font-black tracking-tighter uppercase font-heading text-white group-hover:text-white/90 transition-colors">
-              GROWLORDS
+              {footer.brandName || 'GROWLORDS'}
             </span>
           </a>
 
@@ -80,7 +89,7 @@ export default function Navbar({ onOpenProjectModal }: NavbarProps) {
               data-cursor="open"
               className="group px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/5 hover:bg-[#B7FF3C] border border-white/10 hover:border-[#B7FF3C] text-white hover:text-[#050505] text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all duration-300"
             >
-              <span>Start a Project</span>
+              <span>{hero.primaryCtaText || 'Start a Project'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
           </div>
@@ -133,12 +142,12 @@ export default function Navbar({ onOpenProjectModal }: NavbarProps) {
                 }}
                 className="w-full py-4 rounded-full bg-[#B7FF3C] text-[#050505] font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(183,255,60,0.3)]"
               >
-                <span>Start a Project</span>
+                <span>{hero.primaryCtaText || 'Start a Project'}</span>
                 <ArrowUpRight className="w-4 h-4" />
               </button>
 
               <p className="text-center text-[10px] sm:text-xs text-white/40 font-mono uppercase tracking-widest">
-                MARKETING BUILT FOR GROWTH.
+                {hero.headline || 'MARKETING BUILT FOR GROWTH.'}
               </p>
             </div>
           </motion.div>
