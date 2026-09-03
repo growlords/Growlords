@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const destinationEmail = process.env.CONTACT_EMAIL || "growlords@gmail.com";
+    const destinationEmail = process.env.CONTACT_EMAIL || "growlords2026@gmail.com";
     const subject = `New Growlords Website Enquiry — ${validatedData.name}`;
     const submittedTimestamp = new Date().toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",

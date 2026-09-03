@@ -143,11 +143,11 @@ export default function Footer() {
             </h3>
             <div className="flex flex-col gap-3 text-sm">
               <a
-                href="mailto:growlords@gmail.com"
+                href="mailto:growlords2026@gmail.com"
                 className="flex items-center gap-2.5 text-[#111111] hover:text-[#16A34A] transition-colors group break-all"
               >
                 <Mail className="w-4 h-4 text-[#16A34A] shrink-0" />
-                <span>growlords@gmail.com</span>
+                <span>growlords2026@gmail.com</span>
               </a>
 
               <a

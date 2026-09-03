@@ -28,8 +28,8 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-bold text-[#111111] pt-4">3. Security &amp; Contact</h2>
           <p>
             All inquiries are transmitted via secure HTTPS protocols. For any inquiries regarding your data, contact us at:{" "}
-            <a href="mailto:growlords@gmail.com" className="text-[#16A34A] underline font-medium">
-              growlords@gmail.com
+            <a href="mailto:growlords2026@gmail.com" className="text-[#16A34A] underline font-medium">
+              growlords2026@gmail.com
             </a>.
           </p>
         </div>

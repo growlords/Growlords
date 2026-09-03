@@ -190,10 +190,10 @@ function ContactFormInner() {
                 Official Agency Email
               </span>
               <a
-                href="mailto:growlords@gmail.com"
+                href="mailto:growlords2026@gmail.com"
                 className="text-[#111111] hover:text-[#16A34A] text-sm sm:text-base font-bold transition-colors break-all"
               >
-                growlords@gmail.com
+                growlords2026@gmail.com
               </a>
               <span className="text-xs text-[#5F6368] font-mono">
                 Direct inbox monitored 24/7
@@ -267,7 +267,7 @@ function ContactFormInner() {
 
               <p className="text-xs text-[#5F6368] max-w-sm">
                 A copy has been routed directly to{" "}
-                <span className="text-[#111111] font-mono font-medium">growlords@gmail.com</span>.
+                <span className="text-[#111111] font-mono font-medium">growlords2026@gmail.com</span>.
                 You can also connect with us immediately on WhatsApp:
               </p>
 
@@ -481,7 +481,7 @@ function ContactFormInner() {
               </button>
 
               <p className="text-[11px] text-[#5F6368] text-center font-mono mt-1">
-                Dispatched directly to growlords@gmail.com • Spam Protected
+                Dispatched directly to growlords2026@gmail.com • Spam Protected
               </p>
             </form>
           )}

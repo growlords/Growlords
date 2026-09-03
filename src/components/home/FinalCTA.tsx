@@ -51,10 +51,10 @@ export default function FinalCTA() {
           <span>
             Direct Email:{" "}
             <a
-              href="mailto:growlords@gmail.com"
+              href="mailto:growlords2026@gmail.com"
               className="text-[#111111] hover:text-[#16A34A] font-medium transition-colors"
             >
-              growlords@gmail.com
+              growlords2026@gmail.com
             </a>
           </span>
           <span className="text-zinc-300">•</span>

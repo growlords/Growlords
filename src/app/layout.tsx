@@ -106,7 +106,7 @@ export default function RootLayout({
         name: "Growlords",
         url: "https://growlords.com",
         logo: "https://growlords.com/logo.svg",
-        email: "growlords@gmail.com",
+        email: "growlords2026@gmail.com",
         telephone: "+919460740836",
         sameAs: ["https://instagram.com/growlords", "https://wa.me/919460740836"],
         description:
