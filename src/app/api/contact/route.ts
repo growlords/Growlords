@@ -180,7 +180,7 @@ Destination target: ${destinationEmail}`
     const fromAddress =
       process.env.EMAIL_FROM || "Growlords Website <onboarding@resend.dev>";
 
-    const { data, error } = await resend.emails.send({
+    let sendResult = await resend.emails.send({
       from: fromAddress,
       to: [destinationEmail],
       replyTo: validatedData.email,
@@ -188,6 +188,24 @@ Destination target: ${destinationEmail}`
       text: plainTextBody,
       html: htmlBody,
     });
+
+    // If in Resend testing mode, Resend restricts to the account owner email (e.g. growlords2026@gmail.com).
+    // If restricted, automatically retry delivering to the account owner email.
+    if (sendResult.error && sendResult.error.statusCode === 403 && sendResult.error.message.includes("your own email address")) {
+      const match = sendResult.error.message.match(/\(([^)]+)\)/);
+      const allowedOwnerEmail = match ? match[1] : "growlords2026@gmail.com";
+      console.warn(`[Growlords Email Notice] Resend test mode active. Retrying delivery to registered account owner: ${allowedOwnerEmail}`);
+      sendResult = await resend.emails.send({
+        from: fromAddress,
+        to: [allowedOwnerEmail],
+        replyTo: validatedData.email,
+        subject,
+        text: plainTextBody,
+        html: htmlBody,
+      });
+    }
+
+    const { data, error } = sendResult;
 
     if (error || !data?.id) {
       console.error(
