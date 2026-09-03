@@ -1,20 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import nodemailer from "nodemailer";
 
-// Zod validation schema
+// Strict but accessible validation schema
 const ContactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().email("Please provide a valid email address"),
-  phone: z.string().min(8, "Phone number must be at least 8 digits").max(20),
-  company: z.string().max(100).optional().default(""),
-  service: z.string().min(2, "Please select or provide a service required"),
-  budget: z.string().min(1, "Please select an estimated investment budget"),
-  details: z.string().min(10, "Please provide at least 10 characters of project details"),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().trim().email("Please provide a valid email address"),
+  phone: z
+    .string()
+    .trim()
+    .min(8, "Phone number must be at least 8 digits")
+    .max(20, "Phone number too long"),
+  company: z.string().trim().max(100).optional().default(""),
+  service: z.string().trim().min(2, "Please select a service required"),
+  budget: z.string().trim().min(1, "Please select an estimated budget"),
+  details: z
+    .string()
+    .trim()
+    .min(10, "Please provide at least 10 characters describing your project"),
   // Honeypot spam trap: must remain empty
   website_hp: z.string().max(0, "Spam detected").optional().default(""),
 });
 
-// Simple in-memory rate limiting map for basic protection
+// In-memory rate limiting: max 5 submissions per 10 minutes per IP
 const ipRateLimit = new Map<string, { count: number; expiresAt: number }>();
 
 export async function POST(req: NextRequest) {
@@ -22,7 +30,6 @@ export async function POST(req: NextRequest) {
     const ip = req.headers.get("x-forwarded-for") || "local_ip";
     const now = Date.now();
 
-    // Check rate limit: max 5 submissions per 10 minutes per IP
     const record = ipRateLimit.get(ip);
     if (record) {
       if (now < record.expiresAt) {
@@ -30,7 +37,8 @@ export async function POST(req: NextRequest) {
           return NextResponse.json(
             {
               success: false,
-              message: "Too many submission attempts. Please wait a few minutes before trying again.",
+              message:
+                "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
             },
             { status: 429 }
           );
@@ -50,69 +58,211 @@ export async function POST(req: NextRequest) {
     // Spam honeypot detection
     if (validatedData.website_hp && validatedData.website_hp.length > 0) {
       return NextResponse.json(
-        { success: false, message: "Spam bot submission blocked." },
+        {
+          success: false,
+          message:
+            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
+        },
         { status: 400 }
       );
     }
 
-    // Email Dispatch Logic:
-    // Destination: growlords2026@gmail.com
-    const emailPayload = {
-      to: "growlords2026@gmail.com",
-      subject: `[GROWLORDS LEAD] New Project Enquiry from ${validatedData.name}`,
-      data: {
-        name: validatedData.name,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        company: validatedData.company || "Not Specified",
-        service: validatedData.service,
-        budget: validatedData.budget,
-        details: validatedData.details,
-        submittedAt: new Date().toISOString(),
-      },
-    };
+    const destinationEmail = process.env.CONTACT_EMAIL || "growlords@gmail.com";
+    const subject = `New Growlords Website Enquiry — ${validatedData.name}`;
+    const submittedTimestamp = new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "full",
+      timeStyle: "medium",
+    });
 
-    // Log the lead record securely on the server
-    console.log("=== GROWLORDS NEW INQUIRY RECEIVED ===", JSON.stringify(emailPayload, null, 2));
+    const plainTextBody = `NEW PROJECT ENQUIRY
 
-    // If SMTP credentials (e.g. RESEND_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS) are provided in .env,
-    // they can be dispatched immediately. Otherwise, the lead is safely recorded and returns success.
-    if (process.env.RESEND_API_KEY) {
+Name:
+${validatedData.name}
+
+Email:
+${validatedData.email}
+
+Phone:
+${validatedData.phone}
+
+Company:
+${validatedData.company || "Not Specified"}
+
+Service Required:
+${validatedData.service}
+
+Budget:
+${validatedData.budget}
+
+Project Details:
+${validatedData.details}
+
+Submitted:
+${submittedTimestamp}
+`;
+
+    const htmlBody = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #FAFBF9; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px;">
+        <div style="border-bottom: 2px solid #16A34A; padding-bottom: 12px; margin-bottom: 20px;">
+          <h1 style="color: #111111; font-size: 22px; font-weight: 800; margin: 0; text-transform: uppercase;">NEW PROJECT ENQUIRY</h1>
+          <p style="color: #16A34A; font-size: 13px; font-weight: 700; margin: 4px 0 0 0; letter-spacing: 1px;">GROWLORDS AGENCY WEBSITE</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; width: 140px; font-size: 14px;">Name:</td>
+            <td style="padding: 8px 0; color: #111111; font-size: 15px; font-weight: 600;">${validatedData.name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Email:</td>
+            <td style="padding: 8px 0; color: #111111; font-size: 15px;"><a href="mailto:${validatedData.email}" style="color: #16A34A; text-decoration: none; font-weight: 600;">${validatedData.email}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Phone:</td>
+            <td style="padding: 8px 0; color: #111111; font-size: 15px; font-weight: 600;">${validatedData.phone}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Company:</td>
+            <td style="padding: 8px 0; color: #111111; font-size: 15px;">${validatedData.company || "Not Specified"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Service Required:</td>
+            <td style="padding: 8px 0; color: #16A34A; font-size: 15px; font-weight: 700;">${validatedData.service}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Budget:</td>
+            <td style="padding: 8px 0; color: #111111; font-size: 15px; font-weight: 600;">${validatedData.budget}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Submitted:</td>
+            <td style="padding: 8px 0; color: #5F6368; font-size: 13px;">${submittedTimestamp}</td>
+          </tr>
+        </table>
+
+        <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+          <h3 style="color: #111111; font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 0 0 8px 0; letter-spacing: 0.5px;">Project Details:</h3>
+          <p style="color: #333333; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${validatedData.details}</p>
+        </div>
+
+        <div style="text-align: center; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06);">
+          <a href="mailto:${validatedData.email}?subject=Re: Your enquiry with Growlords" style="display: inline-block; background-color: #16A34A; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 9999px;">
+            REPLY TO CLIENT
+          </a>
+        </div>
+      </div>
+    `;
+
+    let emailDelivered = false;
+    let deliveryMethod = "";
+
+    // Method 1: Resend REST API (if RESEND_API_KEY or EMAIL_API_KEY is configured)
+    const resendApiKey = process.env.RESEND_API_KEY || process.env.EMAIL_API_KEY;
+    if (resendApiKey) {
       try {
-        await fetch("https://api.resend.com/emails", {
+        const fromEmail =
+          process.env.EMAIL_FROM || "Growlords Website <onboarding@resend.dev>";
+        const resendResponse = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+            Authorization: `Bearer ${resendApiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Growlords Inquiries <onboarding@resend.dev>",
-            to: ["growlords2026@gmail.com"],
+            from: fromEmail,
+            to: [destinationEmail],
             reply_to: validatedData.email,
-            subject: emailPayload.subject,
-            html: `
-              <h2>New Project Lead Received on Growlords.com</h2>
-              <p><strong>Client Name:</strong> ${validatedData.name}</p>
-              <p><strong>Email:</strong> ${validatedData.email}</p>
-              <p><strong>Phone:</strong> ${validatedData.phone}</p>
-              <p><strong>Company:</strong> ${validatedData.company || "N/A"}</p>
-              <p><strong>Service Required:</strong> ${validatedData.service}</p>
-              <p><strong>Budget Range:</strong> ${validatedData.budget}</p>
-              <p><strong>Project Details:</strong></p>
-              <blockquote>${validatedData.details}</blockquote>
-            `,
+            subject,
+            text: plainTextBody,
+            html: htmlBody,
           }),
         });
+
+        const resendData = await resendResponse.json();
+        if (resendResponse.ok && resendData.id) {
+          emailDelivered = true;
+          deliveryMethod = "Resend REST API";
+          console.log(
+            `[Growlords Email Sent] Message delivered via Resend. ID: ${resendData.id}`
+          );
+        } else {
+          console.error(
+            "[Growlords Email Error] Resend API rejected message:",
+            resendData
+          );
+        }
       } catch (err) {
-        console.error("Resend delivery failed, lead logged:", err);
+        console.error("[Growlords Email Error] Resend dispatch failed:", err);
       }
+    }
+
+    // Method 2: Nodemailer SMTP (if SMTP_USER / SMTP_PASS or SMTP_HOST is configured, e.g. Gmail SMTP)
+    if (!emailDelivered && (process.env.SMTP_USER || process.env.SMTP_HOST)) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST || "smtp.gmail.com",
+          port: parseInt(process.env.SMTP_PORT || "465", 10),
+          secure:
+            process.env.SMTP_SECURE === "true" ||
+            !process.env.SMTP_PORT ||
+            process.env.SMTP_PORT === "465",
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        const info = await transporter.sendMail({
+          from:
+            process.env.EMAIL_FROM ||
+            `"Growlords Enquiries" <${process.env.SMTP_USER || destinationEmail}>`,
+          to: destinationEmail,
+          replyTo: validatedData.email,
+          subject,
+          text: plainTextBody,
+          html: htmlBody,
+        });
+
+        if (info.messageId) {
+          emailDelivered = true;
+          deliveryMethod = "SMTP Transporter";
+          console.log(
+            `[Growlords Email Sent] Message delivered via SMTP. ID: ${info.messageId}`
+          );
+        }
+      } catch (err) {
+        console.error("[Growlords Email Error] SMTP dispatch failed:", err);
+      }
+    }
+
+    // Method 3: Fallback verification
+    if (!emailDelivered) {
+      console.warn(
+        `[Growlords Email Alert] Neither RESEND_API_KEY nor SMTP credentials (SMTP_USER/SMTP_PASS) are currently set in environment variables.
+Lead details saved to server log:
+${plainTextBody}
+Destination: ${destinationEmail}
+To enable live delivery, add RESEND_API_KEY (from resend.com) or SMTP_USER & SMTP_PASS (Gmail App Password) to your environment variables.`
+      );
+
+      // Return server error so user is directed to WhatsApp / phone rather than false success
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Your enquiry has been sent successfully. We'll get back to you soon.",
+        message:
+          "Your enquiry has been sent successfully. We'll get back to you soon.",
         leadId: `GL-${Date.now().toString(36).toUpperCase()}`,
+        deliveryMethod,
       },
       { status: 200 }
     );
@@ -121,17 +271,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: error.issues[0]?.message || "Invalid form submission data.",
+          message:
+            error.issues[0]?.message ||
+            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
           errors: error.issues,
         },
         { status: 422 }
       );
     }
 
+    console.error("[Growlords Contact API Error]", error);
     return NextResponse.json(
       {
         success: false,
-        message: "An unexpected error occurred. Please reach us directly at growlords2026@gmail.com.",
+        message:
+          "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
       },
       { status: 500 }
     );

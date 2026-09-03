@@ -28,8 +28,8 @@ export default function TermsPage() {
           <h2 className="text-xl font-bold text-[#111111] pt-4">3. Governing Law &amp; Inquiries</h2>
           <p>
             These terms are governed by the laws of India. For any questions, contact our executive team at:{" "}
-            <a href="mailto:growlords2026@gmail.com" className="text-[#16A34A] underline font-medium">
-              growlords2026@gmail.com
+            <a href="mailto:growlords@gmail.com" className="text-[#16A34A] underline font-medium">
+              growlords@gmail.com
             </a>.
           </p>
         </div>

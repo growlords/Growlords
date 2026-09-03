@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Mail, ArrowUp } from "lucide-react";
 import InstagramIcon from "@/components/common/InstagramIcon";
+import WhatsAppIcon from "@/components/common/WhatsAppIcon";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -142,11 +143,24 @@ export default function Footer() {
             </h3>
             <div className="flex flex-col gap-3 text-sm">
               <a
-                href="mailto:growlords2026@gmail.com"
+                href="mailto:growlords@gmail.com"
                 className="flex items-center gap-2.5 text-[#111111] hover:text-[#16A34A] transition-colors group break-all"
               >
                 <Mail className="w-4 h-4 text-[#16A34A] shrink-0" />
-                <span>growlords2026@gmail.com</span>
+                <span>growlords@gmail.com</span>
+              </a>
+
+              <a
+                href="https://wa.me/919460740836?text=Hi%20Growlords%2C%20I%27m%20interested%20in%20your%20digital%20marketing%20services.%20I%27d%20like%20to%20discuss%20my%20project."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 text-[#111111] hover:text-[#25D366] transition-colors group"
+              >
+                <WhatsAppIcon className="w-4 h-4 text-[#25D366] shrink-0" />
+                <div className="flex items-center gap-1">
+                  <span>+91 9460740836</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#25D366]" />
+                </div>
               </a>
 
               <a

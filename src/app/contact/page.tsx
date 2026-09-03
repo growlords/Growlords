@@ -9,14 +9,16 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowUpRight,
+  MessageCircle,
 } from "lucide-react";
 import InstagramIcon from "@/components/common/InstagramIcon";
+import WhatsAppIcon from "@/components/common/WhatsAppIcon";
 import confetti from "canvas-confetti";
 
 function ContactFormInner() {
   const searchParams = useSearchParams();
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     email: "",
     phone: "",
@@ -25,12 +27,20 @@ function ContactFormInner() {
     budget: "₹15,000 – ₹30,000 (Starter)",
     details: "",
     website_hp: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(initialFormData);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle"
   );
   const [errorMessage, setErrorMessage] = useState("");
+
+  const whatsappNumber = "919460740836";
+  const whatsappPreFilled =
+    "Hi Growlords, I'm interested in your digital marketing services. I'd like to discuss my project.";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    whatsappPreFilled
+  )}`;
 
   useEffect(() => {
     const serviceParam = searchParams.get("service");
@@ -84,6 +94,8 @@ function ContactFormInner() {
 
       if (res.ok && data.success) {
         setStatus("success");
+        // Clear/reset form fields ONLY after successful submission
+        setFormData(initialFormData);
         try {
           confetti({
             particleCount: 80,
@@ -97,20 +109,21 @@ function ContactFormInner() {
       } else {
         setStatus("error");
         setErrorMessage(
-          data.message || "Failed to submit enquiry. Please try again."
+          data.message ||
+            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp."
         );
       }
     } catch {
       setStatus("error");
       setErrorMessage(
-        "Network error. Please email us directly at growlords2026@gmail.com."
+        "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp."
       );
     }
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
-      {/* Left Column: Contact Philosophy & Social Links */}
+      {/* Left Column: Contact Philosophy & Social/Direct Links */}
       <div className="lg:col-span-5 flex flex-col gap-8">
         <div className="flex flex-col gap-3.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#16A34A]/30 text-xs font-mono uppercase tracking-widest text-[#16A34A] w-fit shadow-2xs">
@@ -119,20 +132,56 @@ function ContactFormInner() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-[#111111] uppercase tracking-tight leading-tight">
-            DIRECT FOUNDER <br />
-            <span className="text-[#16A34A]">COMMUNICATION</span>
+            SEND AN ENQUIRY <br />
+            <span className="text-[#16A34A]">OR CHAT DIRECTLY</span>
           </h2>
 
           <p className="text-sm sm:text-base text-[#5F6368] leading-relaxed">
             Every project enquiry is personally reviewed by CEOs Raman Kamboj &amp; Jatin Kamboj.
-            We respond within 24 hours with an actionable roadmap, scope estimate, and clear next steps.
+            Reach out via form or start an instant conversation on WhatsApp.
           </p>
         </div>
 
-        {/* Contact Points */}
+        {/* Contact Points (Email, WhatsApp, Instagram) */}
         <div className="flex flex-col gap-4">
+          {/* WhatsApp Direct */}
+          <div className="p-5 rounded-2xl bg-white border border-black/[0.08] shadow-2xs flex flex-col gap-3 hover:border-[#25D366]/40 transition-colors">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 flex items-center justify-center text-[#25D366] shrink-0">
+                <WhatsAppIcon className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#5F6368]">
+                  WhatsApp Direct Line
+                </span>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#111111] hover:text-[#25D366] text-base font-bold transition-colors"
+                >
+                  +91 9460740836
+                </a>
+                <span className="text-xs text-[#5F6368] font-mono">
+                  Instant response • Available 24/7
+                </span>
+              </div>
+            </div>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-[#25D366] text-white hover:bg-[#20bd5a] transition-all flex items-center justify-center gap-2 shadow-xs"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              <span>Chat on WhatsApp</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
           {/* Email */}
-          <div className="p-5 rounded-2xl bg-white border border-black/[0.08] shadow-2xs flex items-start gap-4">
+          <div className="p-5 rounded-2xl bg-white border border-black/[0.08] shadow-2xs flex items-start gap-4 hover:border-[#16A34A]/30 transition-colors">
             <div className="w-10 h-10 rounded-xl bg-[#F4F7F4] border border-[#16A34A]/20 flex items-center justify-center text-[#16A34A] shrink-0">
               <Mail className="w-5 h-5" />
             </div>
@@ -141,10 +190,10 @@ function ContactFormInner() {
                 Official Agency Email
               </span>
               <a
-                href="mailto:growlords2026@gmail.com"
+                href="mailto:growlords@gmail.com"
                 className="text-[#111111] hover:text-[#16A34A] text-sm sm:text-base font-bold transition-colors break-all"
               >
-                growlords2026@gmail.com
+                growlords@gmail.com
               </a>
               <span className="text-xs text-[#5F6368] font-mono">
                 Direct inbox monitored 24/7
@@ -153,7 +202,7 @@ function ContactFormInner() {
           </div>
 
           {/* Instagram */}
-          <div className="p-5 rounded-2xl bg-white border border-black/[0.08] shadow-2xs flex items-start gap-4">
+          <div className="p-5 rounded-2xl bg-white border border-black/[0.08] shadow-2xs flex items-start gap-4 hover:border-[#16A34A]/30 transition-colors">
             <div className="w-10 h-10 rounded-xl bg-[#F4F7F4] border border-[#16A34A]/20 flex items-center justify-center text-[#16A34A] shrink-0">
               <InstagramIcon className="w-5 h-5" />
             </div>
@@ -171,7 +220,7 @@ function ContactFormInner() {
                 <ArrowUpRight className="w-4 h-4 text-[#16A34A] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <span className="text-xs text-[#5F6368] font-mono">
-                Click to open official profile
+                Click to open official agency profile
               </span>
             </div>
           </div>
@@ -212,30 +261,31 @@ function ContactFormInner() {
 
               <div className="p-4 rounded-xl bg-[#F4F7F4] border border-[#16A34A]/20 max-w-md">
                 <p className="text-sm sm:text-base text-[#16A34A] font-semibold leading-relaxed">
-                  Your enquiry has been sent successfully. We'll get back to you soon.
+                  Your enquiry has been sent successfully. We&apos;ll get back to you soon.
                 </p>
               </div>
 
               <p className="text-xs text-[#5F6368] max-w-sm">
-                A copy has been routed to{" "}
-                <span className="text-[#111111] font-mono font-medium">growlords2026@gmail.com</span>.
-                You can also reach us immediately on Instagram{" "}
-                <a
-                  href="https://instagram.com/growlords"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#16A34A] underline font-medium"
-                >
-                  @growlords
-                </a>
-                .
+                A copy has been routed directly to{" "}
+                <span className="text-[#111111] font-mono font-medium">growlords@gmail.com</span>.
+                You can also connect with us immediately on WhatsApp:
               </p>
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#25D366] text-white text-xs font-bold shadow-xs hover:bg-[#20bd5a] transition-all"
+              >
+                <WhatsAppIcon className="w-4 h-4" />
+                <span>Chat on WhatsApp (+91 9460740836)</span>
+              </a>
 
               <button
                 onClick={() => setStatus("idle")}
-                className="mt-4 px-6 py-2.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-[#111111] text-xs font-semibold transition-colors"
+                className="mt-2 text-xs font-semibold text-[#5F6368] hover:text-[#111111] underline transition-colors"
               >
-                Send Another Message
+                Send Another Enquiry
               </button>
             </div>
           ) : (
@@ -264,9 +314,20 @@ function ContactFormInner() {
               </div>
 
               {status === "error" && (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-600 text-xs sm:text-sm">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{errorMessage}</span>
+                <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex flex-col gap-2 text-red-700 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
+                    <span>{errorMessage}</span>
+                  </div>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 font-bold text-[#25D366] hover:underline mt-1 w-fit"
+                  >
+                    <WhatsAppIcon className="w-3.5 h-3.5" />
+                    <span>Click here to send enquiry via WhatsApp instead →</span>
+                  </a>
                 </div>
               )}
 
@@ -297,7 +358,7 @@ function ContactFormInner() {
                     id="email"
                     name="email"
                     required
-                    placeholder="raman@example.com"
+                    placeholder="client@example.com"
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-[#FAFBF9] border border-black/[0.1] text-sm text-[#111111] placeholder-zinc-400 focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 transition-all"
@@ -316,7 +377,7 @@ function ContactFormInner() {
                     id="phone"
                     name="phone"
                     required
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 94607 40836"
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-[#FAFBF9] border border-black/[0.1] text-sm text-[#111111] placeholder-zinc-400 focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 transition-all"
@@ -396,7 +457,7 @@ function ContactFormInner() {
                   name="details"
                   rows={4}
                   required
-                  placeholder="Tell us about your target audience, required features, reference sites, and your timeline..."
+                  placeholder="Tell us about your business, reference sites, required features, and timeline..."
                   value={formData.details}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-xl bg-[#FAFBF9] border border-black/[0.1] text-sm text-[#111111] placeholder-zinc-400 focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 transition-all resize-none"
@@ -420,7 +481,7 @@ function ContactFormInner() {
               </button>
 
               <p className="text-[11px] text-[#5F6368] text-center font-mono mt-1">
-                Submissions dispatched directly to growlords2026@gmail.com • Spam Protected
+                Dispatched directly to growlords@gmail.com • Spam Protected
               </p>
             </form>
           )}
@@ -444,13 +505,13 @@ export default function ContactPage() {
         </div>
 
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-[#111111] uppercase leading-[1.08] mb-6 max-w-4xl mx-auto">
-          LET'S BUILD SOMETHING <br />
+          LET&apos;S BUILD SOMETHING <br />
           <span className="text-[#16A34A]">THAT GROWS.</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#5F6368] max-w-2xl mx-auto leading-relaxed">
           Ready to turn your vision into a scalable digital revenue engine?
-          Fill out the briefing form below or connect directly with our co-founders.
+          Fill out the briefing form below or connect directly with our co-founders on WhatsApp.
         </p>
       </section>
 

@@ -4,6 +4,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import CustomCursor from "@/components/common/CustomCursor";
 import Preloader from "@/components/common/Preloader";
+import FloatingWhatsApp from "@/components/common/FloatingWhatsApp";
 
 export const viewport: Viewport = {
   themeColor: "#FAFBF9",
@@ -41,17 +42,22 @@ export const metadata: Metadata = {
     { name: "Jatin Kamboj", url: "https://instagram.com/growlords" },
   ],
   creator: "Growlords Digital Agency",
+  publisher: "Growlords",
+  formatDetection: {
+    email: true,
+    telephone: true,
+  },
   openGraph: {
-    type: "website",
-    locale: "en_IN",
-    url: "https://growlords.com",
-    siteName: "Growlords",
     title: "Growlords — Build. Grow. Dominate. | 3D Digital Marketing Agency",
     description:
       "Transforming ambitious brands into digital category leaders through high-converting 3D websites, performance marketing, and creative production. Starting from ₹15,000.",
+    url: "https://growlords.com",
+    siteName: "Growlords",
+    locale: "en_IN",
+    type: "website",
     images: [
       {
-        url: "/logo.svg",
+        url: "https://growlords.com/logo.svg",
         width: 1200,
         height: 630,
         alt: "Growlords Digital Marketing & Creative Agency",
@@ -63,11 +69,7 @@ export const metadata: Metadata = {
     title: "Growlords — 3D Digital Marketing & Creative Agency",
     description:
       "We build digital brands that grow. Websites, SEO, E-Commerce, Meta Ads & AI Video starting from ₹15,000.",
-    images: ["/logo.svg"],
-  },
-  icons: {
-    icon: "/logo.svg",
-    apple: "/logo.svg",
+    images: ["https://growlords.com/logo.svg"],
   },
   robots: {
     index: true,
@@ -80,13 +82,20 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/logo.svg" }],
+  },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   // Schema.org JSON-LD Structured Data
   const jsonLd = {
     "@context": "https://schema.org",
@@ -97,8 +106,9 @@ export default function RootLayout({
         name: "Growlords",
         url: "https://growlords.com",
         logo: "https://growlords.com/logo.svg",
-        email: "growlords2026@gmail.com",
-        sameAs: ["https://instagram.com/growlords"],
+        email: "growlords@gmail.com",
+        telephone: "+919460740836",
+        sameAs: ["https://instagram.com/growlords", "https://wa.me/919460740836"],
         description:
           "Digital marketing and creative agency helping ambitious businesses build, grow and dominate digitally.",
         founder: [
@@ -113,16 +123,6 @@ export default function RootLayout({
             jobTitle: "CEO & Co-Founder",
           },
         ],
-        priceRange: "₹15,000+",
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://growlords.com/#website",
-        url: "https://growlords.com",
-        name: "Growlords",
-        publisher: {
-          "@id": "https://growlords.com/#organization",
-        },
       },
     ],
   };
@@ -141,6 +141,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1 w-full">{children}</main>
         <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );
