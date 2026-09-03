@@ -6,6 +6,8 @@ import {
   Sparkles,
   ExternalLink,
   Search as SearchIcon,
+  Globe,
+  ArrowRight,
 } from "lucide-react";
 import { PROJECTS, CATEGORIES, ProjectCategory } from "@/data/projects";
 import ProjectCard3D from "@/components/projects/ProjectCard3D";
@@ -29,22 +31,22 @@ export default function ProjectsPage() {
     return matchesCategory && matchesSearch;
   });
 
-  const featuredProjects = PROJECTS.filter((p) => p.featured);
+  const flagshipProject = PROJECTS.find((p) => p.id === "growlordsanimated") || PROJECTS[0];
 
   return (
     <div className="relative w-full overflow-hidden pt-28 bg-[#FAFBF9]">
       {/* Background illumination */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-[#16A34A]/5 blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-[#16A34A]/5 blur-[160px] pointer-events-none" />
 
       {/* Header */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#16A34A]/30 text-xs font-mono uppercase tracking-widest text-[#16A34A] mb-6 shadow-xs">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Verified Client Portfolio</span>
+          <span>13 Verified Client Deployments</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-[#111111] uppercase leading-[1.08] mb-6 max-w-4xl mx-auto">
-          WORK WE'VE <span className="text-[#16A34A]">BUILT.</span>
+          WORK WE&apos;VE <span className="text-[#16A34A]">BUILT.</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#5F6368] max-w-2xl mx-auto leading-relaxed">
@@ -53,9 +55,9 @@ export default function ProjectsPage() {
         </p>
       </section>
 
-      {/* Filters & Search Control Bar */}
+      {/* Filter and Search Bar */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-3 rounded-2xl bg-white border border-black/[0.08] shadow-xs backdrop-blur-md">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-3.5 rounded-2xl bg-white border border-black/[0.08] shadow-xs backdrop-blur-md">
           {/* Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
             {CATEGORIES.map((cat) => {
@@ -90,30 +92,26 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      {/* Featured Projects Highlight (Visible when viewing All & no search) */}
+      {/* Full-Width Flagship Showcase Card (Visible when Viewing All and No Search) */}
       {selectedCategory === "All" && !searchQuery && (
-        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 relative z-10">
+        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-14 relative z-10">
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold">
-              ★ Flagship Deployments
+            <span className="text-xs font-mono uppercase tracking-widest text-[#16A34A] font-bold">
+              ★ Flagship 3D Showcase
             </span>
             <span className="h-[1px] flex-1 bg-black/[0.06]" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {featuredProjects.map((project) => (
-              <ProjectCard3D key={project.id} project={project} priority />
-            ))}
-          </div>
+          <ProjectCard3D project={flagshipProject} wide priority />
         </section>
       )}
 
-      {/* Complete Filtered Projects Grid */}
+      {/* Complete Projects Grid */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-24 relative z-10">
         <div className="flex items-center justify-between gap-2 mb-6">
           <span className="text-xs font-mono uppercase tracking-widest text-[#5F6368]">
             {selectedCategory === "All" && !searchQuery
-              ? "All Client Portfolio Websites"
+              ? "All Client Deployments"
               : `Showing Results (${filteredProjects.length})`}
           </span>
           <span className="text-xs font-mono text-[#5F6368]">
@@ -122,9 +120,9 @@ export default function ProjectsPage() {
         </div>
 
         {filteredProjects.length === 0 ? (
-          <div className="text-center py-20 rounded-2xl bg-white border border-black/[0.06] p-8 shadow-xs">
+          <div className="text-center py-20 rounded-3xl bg-white border border-black/[0.06] p-8 shadow-xs">
             <p className="text-[#5F6368] text-sm mb-4">
-              No projects found matching "{searchQuery}" in category "{selectedCategory}".
+              No projects found matching &quot;{searchQuery}&quot; in category &quot;{selectedCategory}&quot;.
             </p>
             <button
               onClick={() => {
@@ -138,9 +136,11 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {filteredProjects.map((project) => (
-              <ProjectCard3D key={project.id} project={project} />
-            ))}
+            {filteredProjects
+              .filter((p) => selectedCategory !== "All" || searchQuery || p.id !== flagshipProject.id)
+              .map((project) => (
+                <ProjectCard3D key={project.id} project={project} />
+              ))}
           </div>
         )}
       </section>

@@ -22,6 +22,9 @@ import {
   Cpu,
   BarChart3,
   ShieldCheck,
+  Globe,
+  Lock,
+  Play,
 } from "lucide-react";
 import { SERVICES, ServiceItem } from "@/data/services";
 import FinalCTA from "@/components/home/FinalCTA";
@@ -62,13 +65,13 @@ export default function ServicesPage() {
   return (
     <div className="relative w-full overflow-hidden pt-28 bg-[#FAFBF9]">
       {/* Background illumination */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-[#16A34A]/5 blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-[#16A34A]/5 blur-[160px] pointer-events-none" />
 
       {/* Header */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#16A34A]/30 text-xs font-mono uppercase tracking-widest text-[#16A34A] mb-6 shadow-xs">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Full-Spectrum Capabilities</span>
+          <span>Full-Spectrum Digital Capabilities</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-[#111111] uppercase leading-[1.08] mb-6 max-w-4xl mx-auto">
@@ -94,7 +97,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Detailed Editorial Services Catalog */}
+      {/* Detailed Editorial Services Catalog with Visual Mockup Cards */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-24 relative z-10">
         <div className="flex flex-col gap-10 sm:gap-14">
           {SERVICES.map((service, idx) => {
@@ -110,7 +113,7 @@ export default function ServicesPage() {
                 }`}
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
-                  {/* Left Col: Main Description & Highlights */}
+                  {/* Left Col: Main Description & Strategic Highlights */}
                   <div className="lg:col-span-7 flex flex-col gap-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-[#F4F7F4] border border-black/[0.08] flex items-center justify-center text-[#16A34A] shadow-xs">
@@ -133,6 +136,19 @@ export default function ServicesPage() {
                     <p className="text-[#5F6368] text-sm sm:text-base leading-relaxed">
                       {service.fullDescription}
                     </p>
+
+                    {/* Visual Preview Graphic Identity */}
+                    <div className="my-2 p-4 rounded-2xl bg-[#FAFBF9] border border-black/[0.06] flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] animate-ping" />
+                        <span className="text-xs font-mono text-[#111111] font-bold uppercase">
+                          Visual Identity: {service.category} Engine
+                        </span>
+                      </div>
+                      <span className="text-xs font-mono text-[#16A34A] font-semibold">
+                        {service.badge}
+                      </span>
+                    </div>
 
                     {/* Key Benefits Grid */}
                     <div className="mt-2 flex flex-col gap-2.5">

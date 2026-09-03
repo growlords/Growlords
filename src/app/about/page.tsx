@@ -12,6 +12,11 @@ import {
   Compass,
   Rocket,
   Lightbulb,
+  TrendingUp,
+  Cpu,
+  Monitor,
+  Palette,
+  Layers,
 } from "lucide-react";
 import InstagramIcon from "@/components/common/InstagramIcon";
 import { FOUNDERS } from "@/data/founders";
@@ -29,6 +34,45 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const growthPathway = [
+    {
+      step: "01",
+      title: "STRATEGY",
+      icon: Compass,
+      desc: "Deconstruct unit economics, audience psychology, and competitor blindspots to engineer high-yield positioning.",
+    },
+    {
+      step: "02",
+      title: "DESIGN",
+      icon: Palette,
+      desc: "Apple-standard spatial typography, custom design systems, and 3D perspectives that make your brand unforgettable.",
+    },
+    {
+      step: "03",
+      title: "TECHNOLOGY",
+      icon: Monitor,
+      desc: "Sub-second Next.js web applications, WebGL shaders, zero bloat, and hardened global edge CDN deployment.",
+    },
+    {
+      step: "04",
+      title: "MARKETING",
+      icon: Target,
+      desc: "High-intent commercial SEO ranking domination combined with high-ROAS Meta and Google media buying.",
+    },
+    {
+      step: "05",
+      title: "AI & AUTOMATION",
+      icon: Cpu,
+      desc: "Autonomous lead routing, rapid video commercials in 48 hours, and generative diffusion creative workflows.",
+    },
+    {
+      step: "06",
+      title: "EXPONENTIAL GROWTH",
+      icon: TrendingUp,
+      desc: "Continuous conversion rate optimization (CRO), recurring revenue retention, and market category leadership.",
+    },
+  ];
+
   const values = [
     {
       title: "Our Mission",
@@ -55,7 +99,7 @@ export default function AboutPage() {
   return (
     <div className="relative w-full overflow-hidden pt-28 bg-[#FAFBF9]">
       {/* Subtle background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-[#16A34A]/5 blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-[#16A34A]/5 blur-[160px] pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* 1. HERO SECTION                                                           */}
@@ -63,7 +107,7 @@ export default function AboutPage() {
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#16A34A]/30 text-xs font-mono uppercase tracking-widest text-[#16A34A] mb-6 shadow-xs">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>The Growlords Identity</span>
+          <span>The Growlords Story</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-[#111111] uppercase leading-[1.08] mb-6 max-w-4xl mx-auto">
@@ -82,15 +126,65 @@ export default function AboutPage() {
             Founded &amp; Directed by Raman Kamboj &amp; Jatin Kamboj
           </span>
           <span className="px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] shadow-2xs">
-            Headquartered in India • Serving Worldwide
+            Headquartered in India • Operating Worldwide
           </span>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. FOUNDERS SECTION (EDITORIAL LIGHT CARDS)                               */}
+      {/* 2. BRAND STORY: THE GROWTH PATHWAY (WHY GROWLORDS?)                       */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-white border-y border-black/[0.05] relative">
+      <section className="py-24 bg-white border-y border-black/[0.05] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold mb-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+              The Growth Pathway
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-[#111111] uppercase mb-4">
+              WHY <span className="text-[#16A34A]">GROWLORDS?</span>
+            </h2>
+            <p className="text-[#5F6368] text-base leading-relaxed">
+              We guide brands along an upward trajectory from initial positioning to sustainable category leadership.
+            </p>
+          </div>
+
+          {/* Growth Pathway Ladder */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {growthPathway.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.step}
+                  className="p-6 rounded-2xl bg-[#FAFBF9] border border-black/[0.06] hover:border-[#16A34A]/40 shadow-2xs hover:shadow-xs transition-all duration-300 flex flex-col gap-3 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-black font-mono text-[#16A34A]">
+                      {item.step}
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-white border border-black/[0.06] flex items-center justify-center text-[#16A34A] group-hover:scale-105 transition-transform">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg font-black text-[#111111] tracking-tight uppercase group-hover:text-[#16A34A] transition-colors">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-[#5F6368] leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 3. FOUNDERS SECTION (EDITORIAL LIGHT CARDS)                               */}
+      {/* ========================================================================= */}
+      <section className="py-24 bg-[#FAFBF9] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold mb-2.5">
@@ -112,7 +206,7 @@ export default function AboutPage() {
                 key={founder.id}
                 className="group relative flex flex-col rounded-3xl bg-white border border-black/[0.08] p-6 sm:p-8 hover:border-[#16A34A]/40 transition-all duration-300 shadow-[0_4px_25px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_40px_-8px_rgba(22,163,74,0.12)]"
               >
-                {/* Visual Portrait Image */}
+                {/* Visual Portrait Image Frame */}
                 <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#F4F7F4] border border-black/[0.06] mb-6 flex items-center justify-center group-hover:border-[#16A34A]/30 transition-colors">
                   <Image
                     src={founder.image}
@@ -121,7 +215,7 @@ export default function AboutPage() {
                     height={300}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-black/[0.08] text-[11px] font-mono text-[#16A34A] font-semibold shadow-2xs">
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-black/[0.08] text-[11px] font-mono text-[#16A34A] font-semibold shadow-2xs">
                     {founder.badge}
                   </div>
                 </div>
@@ -177,7 +271,7 @@ export default function AboutPage() {
                     href={founder.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F4F7F4] border border-black/[0.08] text-xs font-semibold text-[#111111] hover:bg-[#16A34A] hover:text-white hover:border-[#16A34A] transition-all"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F4F7F4] border border-black/[0.08] text-xs font-semibold text-[#111111] hover:bg-[#16A34A] hover:text-white hover:border-[#16A34A] transition-all"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@growlords</span>
@@ -190,9 +284,9 @@ export default function AboutPage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. MISSION, VISION & PILLARS (#FAFBF9 BG)                                 */}
+      {/* 4. MISSION & OPERATIONAL STANDARDS                                        */}
       {/* ========================================================================= */}
-      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-black/[0.05]">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold mb-2.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
@@ -212,7 +306,7 @@ export default function AboutPage() {
             return (
               <div
                 key={val.title}
-                className="p-8 rounded-2xl bg-white border border-black/[0.06] shadow-2xs hover:border-[#16A34A]/40 transition-all flex flex-col gap-3.5"
+                className="p-8 rounded-3xl bg-white border border-black/[0.06] shadow-2xs hover:border-[#16A34A]/40 transition-all flex flex-col gap-3.5"
               >
                 <div className="w-12 h-12 rounded-xl bg-[#16A34A]/10 border border-[#16A34A]/20 flex items-center justify-center text-[#16A34A]">
                   <Icon className="w-6 h-6" />
