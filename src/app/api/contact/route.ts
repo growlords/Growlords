@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 // Server-side validation schema
 const ContactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
@@ -218,7 +221,14 @@ ${submittedTimestamp}
     `;
 
     // Resend Email Delivery
-    const resendApiKey = process.env.RESEND_API_KEY;
+    const resendApiKey = (
+      process.env.RESEND_API_KEY ||
+      process.env.RESEND_KEY ||
+      process.env.EMAIL_API_KEY ||
+      ""
+    )
+      .trim()
+      .replace(/^["']|["']$/g, "");
 
     if (!resendApiKey) {
       console.error(
