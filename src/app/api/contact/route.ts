@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// Strict but accessible validation schema
+// Server-side validation schema
 const ContactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().trim().email("Please provide a valid email address"),
@@ -75,7 +75,8 @@ export async function POST(req: NextRequest) {
       timeStyle: "medium",
     });
 
-    const plainTextBody = `NEW PROJECT ENQUIRY
+    const plainTextBody = `GROWLORDS
+NEW PROJECT ENQUIRY
 
 Name:
 ${validatedData.name}
@@ -83,7 +84,7 @@ ${validatedData.name}
 Email:
 ${validatedData.email}
 
-Phone:
+Phone / WhatsApp:
 ${validatedData.phone}
 
 Company:
@@ -105,13 +106,13 @@ ${submittedTimestamp}
     const htmlBody = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #FAFBF9; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px;">
         <div style="border-bottom: 2px solid #16A34A; padding-bottom: 12px; margin-bottom: 20px;">
-          <h1 style="color: #111111; font-size: 22px; font-weight: 800; margin: 0; text-transform: uppercase;">NEW PROJECT ENQUIRY</h1>
-          <p style="color: #16A34A; font-size: 13px; font-weight: 700; margin: 4px 0 0 0; letter-spacing: 1px;">GROWLORDS AGENCY WEBSITE</p>
+          <h1 style="color: #111111; font-size: 22px; font-weight: 800; margin: 0; text-transform: uppercase;">GROWLORDS</h1>
+          <p style="color: #16A34A; font-size: 13px; font-weight: 700; margin: 4px 0 0 0; letter-spacing: 1px;">NEW PROJECT ENQUIRY</p>
         </div>
 
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
           <tr>
-            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; width: 140px; font-size: 14px;">Name:</td>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; width: 150px; font-size: 14px;">Name:</td>
             <td style="padding: 8px 0; color: #111111; font-size: 15px; font-weight: 600;">${validatedData.name}</td>
           </tr>
           <tr>
@@ -119,7 +120,7 @@ ${submittedTimestamp}
             <td style="padding: 8px 0; color: #111111; font-size: 15px;"><a href="mailto:${validatedData.email}" style="color: #16A34A; text-decoration: none; font-weight: 600;">${validatedData.email}</a></td>
           </tr>
           <tr>
-            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Phone:</td>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Phone / WhatsApp:</td>
             <td style="padding: 8px 0; color: #111111; font-size: 15px; font-weight: 600;">${validatedData.phone}</td>
           </tr>
           <tr>
@@ -145,107 +146,54 @@ ${submittedTimestamp}
           <p style="color: #333333; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${validatedData.details}</p>
         </div>
 
-        <div style="text-align: center; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06);">
-          <a href="mailto:${validatedData.email}?subject=Re: Your enquiry with Growlords" style="display: inline-block; background-color: #16A34A; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 9999px;">
+        <div style="text-align: center; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.06);">
+          <a href="mailto:${validatedData.email}?subject=Re: Your Growlords Project Enquiry" style="display: inline-block; background-color: #16A34A; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 9999px;">
             REPLY TO CLIENT
           </a>
         </div>
       </div>
     `;
 
-    let emailDelivered = false;
-    let deliveryMethod = "";
+    // Resend Email Delivery
+    const resendApiKey = process.env.RESEND_API_KEY;
 
-    // Method 1: Resend REST API (if RESEND_API_KEY or EMAIL_API_KEY is configured)
-    const resendApiKey = process.env.RESEND_API_KEY || process.env.EMAIL_API_KEY;
-    if (resendApiKey) {
-      try {
-        const fromEmail =
-          process.env.EMAIL_FROM || "Growlords Website <onboarding@resend.dev>";
-        const resendResponse = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${resendApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: fromEmail,
-            to: [destinationEmail],
-            reply_to: validatedData.email,
-            subject,
-            text: plainTextBody,
-            html: htmlBody,
-          }),
-        });
-
-        const resendData = await resendResponse.json();
-        if (resendResponse.ok && resendData.id) {
-          emailDelivered = true;
-          deliveryMethod = "Resend REST API";
-          console.log(
-            `[Growlords Email Sent] Message delivered via Resend. ID: ${resendData.id}`
-          );
-        } else {
-          console.error(
-            "[Growlords Email Error] Resend API rejected message:",
-            resendData
-          );
-        }
-      } catch (err) {
-        console.error("[Growlords Email Error] Resend dispatch failed:", err);
-      }
-    }
-
-    // Method 2: Nodemailer SMTP (if SMTP_USER / SMTP_PASS or SMTP_HOST is configured, e.g. Gmail SMTP)
-    if (!emailDelivered && (process.env.SMTP_USER || process.env.SMTP_HOST)) {
-      try {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST || "smtp.gmail.com",
-          port: parseInt(process.env.SMTP_PORT || "465", 10),
-          secure:
-            process.env.SMTP_SECURE === "true" ||
-            !process.env.SMTP_PORT ||
-            process.env.SMTP_PORT === "465",
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
-
-        const info = await transporter.sendMail({
-          from:
-            process.env.EMAIL_FROM ||
-            `"Growlords Enquiries" <${process.env.SMTP_USER || destinationEmail}>`,
-          to: destinationEmail,
-          replyTo: validatedData.email,
-          subject,
-          text: plainTextBody,
-          html: htmlBody,
-        });
-
-        if (info.messageId) {
-          emailDelivered = true;
-          deliveryMethod = "SMTP Transporter";
-          console.log(
-            `[Growlords Email Sent] Message delivered via SMTP. ID: ${info.messageId}`
-          );
-        }
-      } catch (err) {
-        console.error("[Growlords Email Error] SMTP dispatch failed:", err);
-      }
-    }
-
-    // Method 3: Fallback verification
-    if (!emailDelivered) {
-      console.warn(
-        `[Growlords Email Alert] Neither RESEND_API_KEY nor SMTP credentials (SMTP_USER/SMTP_PASS) are currently set in environment variables.
-Lead details saved to server log:
+    if (!resendApiKey) {
+      console.error(
+        `[Growlords Email Alert] RESEND_API_KEY is not set in environment variables.
+Please configure RESEND_API_KEY in .env.local (for local development) or in your Vercel Project Settings > Environment Variables (for production).
+Lead details recorded on server:
 ${plainTextBody}
-Destination: ${destinationEmail}
-To enable live delivery, add RESEND_API_KEY (from resend.com) or SMTP_USER & SMTP_PASS (Gmail App Password) to your environment variables.`
+Destination target: ${destinationEmail}`
       );
 
-      // Return server error so user is directed to WhatsApp / phone rather than false success
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
+        },
+        { status: 503 }
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
+    const fromAddress =
+      process.env.EMAIL_FROM || "Growlords Website <onboarding@resend.dev>";
+
+    const { data, error } = await resend.emails.send({
+      from: fromAddress,
+      to: [destinationEmail],
+      replyTo: validatedData.email,
+      subject,
+      text: plainTextBody,
+      html: htmlBody,
+    });
+
+    if (error || !data?.id) {
+      console.error(
+        "[Growlords Email Error] Resend rejected the email delivery request:",
+        error
+      );
       return NextResponse.json(
         {
           success: false,
@@ -256,13 +204,16 @@ To enable live delivery, add RESEND_API_KEY (from resend.com) or SMTP_USER & SMT
       );
     }
 
+    console.log(
+      `[Growlords Email Success] Enquiry successfully delivered via Resend to ${destinationEmail}. ID: ${data.id}`
+    );
+
     return NextResponse.json(
       {
         success: true,
         message:
           "Your enquiry has been sent successfully. We'll get back to you soon.",
-        leadId: `GL-${Date.now().toString(36).toUpperCase()}`,
-        deliveryMethod,
+        leadId: data.id,
       },
       { status: 200 }
     );
@@ -280,7 +231,7 @@ To enable live delivery, add RESEND_API_KEY (from resend.com) or SMTP_USER & SMT
       );
     }
 
-    console.error("[Growlords Contact API Error]", error);
+    console.error("[Growlords Contact API Internal Error]", error);
     return NextResponse.json(
       {
         success: false,

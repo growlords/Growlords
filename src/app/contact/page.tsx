@@ -471,7 +471,7 @@ function ContactFormInner() {
                 className="w-full mt-2 py-4 px-6 rounded-xl font-bold text-sm sm:text-base tracking-wide bg-[#16A34A] text-white hover:bg-[#15803D] transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {status === "loading" ? (
-                  <span>Processing Secure Transmission...</span>
+                  <span>Sending...</span>
                 ) : (
                   <>
                     <span>Send Project Enquiry</span>
