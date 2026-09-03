@@ -80,14 +80,60 @@ function ContactFormInner() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("loading");
     setErrorMessage("");
+
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const phone = formData.phone.trim();
+    const company = (formData.company || "").trim();
+    const service = formData.service?.trim() || "Web Design & Development";
+    const budget = formData.budget?.trim() || "₹15,000 – ₹30,000 (Starter)";
+    const details = (formData.details || (formData as any).message || "").trim();
+    const website_hp = formData.website_hp || "";
+
+    // Client-side pre-validation
+    if (name.length < 2) {
+      setStatus("error");
+      setErrorMessage("Please enter your full name (minimum 2 characters).");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (phone.replace(/\D/g, "").length < 8) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid phone number (at least 8 digits).");
+      return;
+    }
+
+    if (details.length < 10) {
+      setStatus("error");
+      setErrorMessage("Please provide at least 10 characters describing your project.");
+      return;
+    }
+
+    setStatus("loading");
+
+    const payload = {
+      name,
+      email,
+      phone,
+      company,
+      service,
+      budget,
+      details,
+      website_hp,
+    };
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -109,7 +155,8 @@ function ContactFormInner() {
       } else {
         setStatus("error");
         setErrorMessage(
-          data.message ||
+          data.errors?.[0]?.message ||
+            data.message ||
             "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp."
         );
       }

@@ -10,7 +10,7 @@ const ContactSchema = z.object({
     .string()
     .trim()
     .min(8, "Phone number must be at least 8 digits")
-    .max(20, "Phone number too long"),
+    .max(25, "Phone number too long"),
   company: z.string().trim().max(100).optional().default(""),
   service: z.string().trim().min(2, "Please select a service required"),
   budget: z.string().trim().min(1, "Please select an estimated budget"),
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
             {
               success: false,
               message:
-                "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
+                "Too many submission attempts. Please wait a few minutes before trying again or contact us on WhatsApp.",
             },
             { status: 429 }
           );
@@ -51,9 +51,71 @@ export async function POST(req: NextRequest) {
       ipRateLimit.set(ip, { count: 1, expiresAt: now + 10 * 60 * 1000 });
     }
 
-    // Parse & validate body
-    const body = await req.json();
-    const validatedData = ContactSchema.parse(body);
+    // Parse incoming request JSON
+    let rawBody: any = {};
+    try {
+      rawBody = await req.json();
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid JSON body provided.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Normalize payload to bridge frontend/backend data contract:
+    // - Map 'message' or 'enquiry' to 'details'
+    // - Provide fallback defaults for service and budget if undefined/empty
+    // - Ensure all required fields are proper strings
+    const normalizedBody = {
+      name:
+        typeof rawBody.name === "string" ? rawBody.name.trim() : rawBody.name,
+      email:
+        typeof rawBody.email === "string"
+          ? rawBody.email.trim()
+          : rawBody.email,
+      phone:
+        typeof rawBody.phone === "string"
+          ? rawBody.phone.trim()
+          : rawBody.phone,
+      company:
+        typeof rawBody.company === "string"
+          ? rawBody.company.trim()
+          : rawBody.company || "",
+      service:
+        typeof rawBody.service === "string" && rawBody.service.trim().length > 0
+          ? rawBody.service.trim()
+          : typeof rawBody.serviceRequired === "string" &&
+            rawBody.serviceRequired.trim().length > 0
+          ? rawBody.serviceRequired.trim()
+          : typeof rawBody.selectedService === "string" &&
+            rawBody.selectedService.trim().length > 0
+          ? rawBody.selectedService.trim()
+          : "Web Design & Development",
+      budget:
+        typeof rawBody.budget === "string" && rawBody.budget.trim().length > 0
+          ? rawBody.budget.trim()
+          : typeof rawBody.budgetRange === "string" &&
+            rawBody.budgetRange.trim().length > 0
+          ? rawBody.budgetRange.trim()
+          : "₹15,000 – ₹30,000 (Starter)",
+      details:
+        typeof rawBody.details === "string" && rawBody.details.trim().length > 0
+          ? rawBody.details.trim()
+          : typeof rawBody.message === "string" &&
+            rawBody.message.trim().length > 0
+          ? rawBody.message.trim()
+          : typeof rawBody.enquiry === "string" &&
+            rawBody.enquiry.trim().length > 0
+          ? rawBody.enquiry.trim()
+          : rawBody.details,
+      website_hp: rawBody.website_hp || "",
+    };
+
+    // Validate with Zod
+    const validatedData = ContactSchema.parse(normalizedBody);
 
     // Spam honeypot detection
     if (validatedData.website_hp && validatedData.website_hp.length > 0) {
@@ -67,7 +129,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const destinationEmail = process.env.CONTACT_EMAIL || "growlords2026@gmail.com";
+    const destinationEmail =
+      process.env.CONTACT_EMAIL || "growlords2026@gmail.com";
     const subject = `New Growlords Website Enquiry — ${validatedData.name}`;
     const submittedTimestamp = new Date().toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
@@ -90,13 +153,13 @@ ${validatedData.phone}
 Company:
 ${validatedData.company || "Not Specified"}
 
-Service Required:
+Selected Service:
 ${validatedData.service}
 
 Budget:
 ${validatedData.budget}
 
-Project Details:
+Enquiry Details:
 ${validatedData.details}
 
 Submitted:
@@ -128,7 +191,7 @@ ${submittedTimestamp}
             <td style="padding: 8px 0; color: #111111; font-size: 15px;">${validatedData.company || "Not Specified"}</td>
           </tr>
           <tr>
-            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Service Required:</td>
+            <td style="padding: 8px 0; font-weight: bold; color: #5F6368; font-size: 14px;">Selected Service:</td>
             <td style="padding: 8px 0; color: #16A34A; font-size: 15px; font-weight: 700;">${validatedData.service}</td>
           </tr>
           <tr>
@@ -142,7 +205,7 @@ ${submittedTimestamp}
         </table>
 
         <div style="background-color: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
-          <h3 style="color: #111111; font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 0 0 8px 0; letter-spacing: 0.5px;">Project Details:</h3>
+          <h3 style="color: #111111; font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 0 0 8px 0; letter-spacing: 0.5px;">Enquiry Details:</h3>
           <p style="color: #333333; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${validatedData.details}</p>
         </div>
 
@@ -190,11 +253,17 @@ Destination target: ${destinationEmail}`
     });
 
     // If in Resend testing mode, Resend restricts to the account owner email (e.g. growlords2026@gmail.com).
-    // If restricted, automatically retry delivering to the account owner email.
-    if (sendResult.error && sendResult.error.statusCode === 403 && sendResult.error.message.includes("your own email address")) {
+    // If restricted, automatically retry delivering to the registered account owner.
+    if (
+      sendResult.error &&
+      sendResult.error.statusCode === 403 &&
+      sendResult.error.message.includes("your own email address")
+    ) {
       const match = sendResult.error.message.match(/\(([^)]+)\)/);
       const allowedOwnerEmail = match ? match[1] : "growlords2026@gmail.com";
-      console.warn(`[Growlords Email Notice] Resend test mode active. Retrying delivery to registered account owner: ${allowedOwnerEmail}`);
+      console.warn(
+        `[Growlords Email Notice] Resend test mode active. Retrying delivery to registered account owner: ${allowedOwnerEmail}`
+      );
       sendResult = await resend.emails.send({
         from: fromAddress,
         to: [allowedOwnerEmail],
@@ -242,7 +311,7 @@ Destination target: ${destinationEmail}`
           success: false,
           message:
             error.issues[0]?.message ||
-            "Something went wrong while sending your enquiry. Please try again or contact us on WhatsApp.",
+            "Please check the form fields and try again.",
           errors: error.issues,
         },
         { status: 422 }
