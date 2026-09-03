@@ -1,0 +1,26 @@
+<svg width="400" height="500" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F4F7F4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="500" rx="24" fill="url(#bgGradLight)"/>
+  <rect x="1.5" y="1.5" width="397" height="497" rx="22.5" stroke="rgba(0,0,0,0.06)" stroke-width="2"/>
+  
+  <!-- Ambient soft green glow -->
+  <circle cx="200" cy="170" r="110" fill="#16A34A" fill-opacity="0.06" filter="blur(30px)"/>
+  
+  <!-- Stylized Portrait Silhouette / Executive Monogram -->
+  <circle cx="200" cy="170" r="68" fill="#FFFFFF" stroke="#16A34A" stroke-width="2.5"/>
+  <text x="200" y="184" text-anchor="middle" font-family="system-ui, sans-serif" font-size="40" font-weight="800" fill="#16A34A" letter-spacing="2">JK</text>
+  
+  <!-- Founder Badge & Details -->
+  <rect x="40" y="290" width="320" height="160" rx="16" fill="#FFFFFF" stroke="rgba(0,0,0,0.06)" />
+  <text x="200" y="335" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#111111">Jatin Kamboj</text>
+  <text x="200" y="365" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#16A34A" letter-spacing="1.5">CEO &amp; CO-FOUNDER</text>
+  <text x="200" y="398" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#5F6368">Performance Marketing &amp; Brand Growth</text>
+  <text x="200" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#94A3B8">GROWLORDS</text>
+</svg>
